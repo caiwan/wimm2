@@ -1,0 +1,79 @@
+$zebra-even-color:white;
+$zebra-odd-color:  #f6f6f6;
+
+.category-container {
+  display: flex;
+  background-color: $category-selector-background;
+  border: $category-selector-border;
+  cursor: text;
+
+  input {
+    &.text {
+      border: none;
+      flex-grow: 1;
+    }
+  }
+
+  .selector {
+
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    left: 0;
+    right: 5%;
+    max-height: 40vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0;
+    border: $border;
+    list-style: none;
+    z-index: 65535;
+    background: white;
+
+    transform: translateY(-100%);
+
+    float: left;
+    min-width: 160px;
+    text-align: left; 
+
+    .selector-group {
+      list-style: none outside none;
+      padding: 0px;
+      white-space: nowrap;
+      margin: 0px;
+      margin-left: -12px;
+      padding-left: 18pt;
+    }
+
+    .selector-item {
+      padding: 0px;
+      padding-top: 6px;
+      position: relative;
+      z-index: 2;
+
+      &.zebra::after {
+        content: "";
+        display: block;
+        position: absolute;
+        top: 0px;
+        right: -100vw;
+        bottom: 0px;
+        left: -100vw;
+        z-index: -1;
+        user-select: none;
+      }
+      &.zebra {
+        &.even::after {
+          background-color: $zebra-even-color;
+        }
+
+        &.odd::after {
+          background-color: $zebra-odd-color;
+        }
+      }
+      /* selector-item */
+    }
+  }
+  /* selector */
+}
+/* categoey container */

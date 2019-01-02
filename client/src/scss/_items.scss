@@ -1,0 +1,90 @@
+#item-list {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  form.item-form {
+    display: flex;
+    flex-wrap: wrap;
+    position: relative;
+
+    .tags {
+      width: 100%;
+      border: $input-border;
+
+      .tag {
+        font-size: $input-font-size;
+      }
+
+      .tag-input {
+        input {
+          font-size: $input-font-size;
+        }
+
+        ul {
+          border: $item-form-tags-dropdown-border;
+        }
+      }
+    }
+
+    .category-selector {
+      margin-bottom: $category-selector-bottom-margin;
+      flex-basis: 100%;
+    }
+  }
+
+  #date-items {
+    flex-grow: 1;
+    padding: $date-item-list-padding;
+    overflow: auto;
+  }
+
+  #main-item-form {
+    display: flex;
+    flex-shrink: 0;
+    background: $bg;
+    border-top: $main-item-form-border;
+    padding: $main-item-form-padding;
+
+    .item-form {
+      flex-grow: 1;
+      flex-wrap: wrap;
+      margin-right: $main-item-form-margin-right;
+
+      .tags {
+        background: $main-item-form-input-background;
+        margin-bottom: $main-item-form-input-bottom-margin;
+      }
+    }
+
+    button[type="submit"] {
+      width: $main-item-form-submit-width;
+      background: $main-item-form-submit-background;
+      color: $main-item-form-submit-color;
+      border: $main-item-form-submit-border-width solid
+        $main-item-form-submit-color;
+      font-size: $main-item-form-submit-font-size;
+      font-weight: $main-item-form-submit-font-weight;
+      outline: none;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+
+      &:active {
+        color: $main-item-form-submit-background;
+        background: $main-item-form-submit-color;
+      }
+
+      &:disabled {
+        $color: lighten(grayscale($main-item-form-submit-color), 30);
+        color: $color;
+        background: lighten(grayscale($main-item-form-submit-background), 30);
+        border: $main-item-form-submit-border-width solid $color;
+        cursor: default;
+      }
+    }
+  }
+
+  #date-items {
+    flex-grow: 1;
+  }
+}

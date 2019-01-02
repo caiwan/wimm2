@@ -1,0 +1,95 @@
+$bg: #e9e9e9;
+$bg-ui: #fff;
+$border-color: #ddd;
+$border: 1px solid $border-color;
+$font-size: 14pt;
+$font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+$color-main-divider: #9a9a9a;
+$input-background: $bg-ui;
+$input-spacing: 4px;
+$input-border: 1px solid #bbb;
+$color-main-background-alternating: #f5f5f5;
+$date-item-list-padding: 3px;
+
+$input-font-size: 14pt;
+$item-form-tags-dropdown-border: 1px solid $color-main-divider;
+$item-form-input-padding: 2px;
+$item-form-date-width: 7em;
+$item-form-date-right-margin: $input-spacing;
+$header-bottom-border: 1px solid $color-main-divider;
+$header-btn-padding: 4px;
+$header-btn-bg: transparent;
+$header-btn-left-border: $header-bottom-border;
+$header-btn-size: 22pt;
+$header-btn-active-bg: #dbdbdb;
+
+$sidebar-width: 40vw;
+$sidebar-transition: 0.2s ease transform;
+$sidebar-li-padding: 6px;
+$sidebar-li-hover: #dedede;
+$sidebar-li-link-active: $sidebar-li-hover;
+
+$overlay-bg: #000;
+$overlay-transition: 0.2s ease;
+$overlay-opacity: 0.5;
+
+$main-item-form-submit-background: #39a2bf;
+$main-item-form-submit-border-color: #286d81;
+$main-item-form-border: $header-bottom-border;
+$main-item-form-padding: 3px;
+$main-item-form-margin-right: 3px;
+$main-item-form-input-background: $input-background;
+$main-item-form-input-bottom-margin: $input-spacing;
+$main-item-form-submit-width: auto;
+$main-item-form-submit-color: darken($main-item-form-submit-border-color, 14);
+$main-item-form-submit-border-width: 1px;
+$main-item-form-submit-font-size: 26pt;
+$main-item-form-submit-font-weight: bold;
+
+$date-items-background: $bg-ui;
+$date-items-border: $input-border;
+$date-items-bottom-margin: 3px;
+$date-items-head-bottom-border: $input-border;
+$date-items-li-padding: 4px;
+$date-items-head-padding: $date-items-li-padding;
+$date-items-li-odd-background: $color-main-background-alternating;
+$date-items-li-selected-background: #ffe5e5;
+$date-items-li-selected-odd-background: #ffbbbb;
+$date-items-li-submitting-background: #c7eeff;
+$date-items-li-submitting-odd-background: #afe0ff;
+$date-items-tags-tag-margin: 0 4px 0 0;
+$date-items-tags-dropdown-border: 1px solid $color-main-divider;
+$date-items-price-input-width: 6em;
+$date-items-price-input-border: $input-border;
+$date-items-price-input-padding: 0 2px;
+$date-items-button-active-background: rgba(0, 0, 0, 0.1);
+
+$date-items-button-group-left-border: 1px solid $color-main-divider;
+$date-items-button-bottom-border: 1px solid #e2e2e2;
+$date-items-button-background: transparent;
+$date-items-button-font-size: 1.2em;
+
+$category-selector-background: $bg-ui;
+$category-selector-bottom-margin: 3px;
+$category-selector-border: $input-border;
+
+$tag-background: #c1e2eb;
+$tag-color: #14404c;
+$tag-font: sans-serif;
+$tag-margin: 3px 0 3px 3px;
+$tag-padding: 0 4px;
+$tag-size: 16px;
+// $tag-bg-even: ;
+// $tag-bg-odd:
+$error-background: #ebc1c1;
+$error-color: #501414;
+$choices-tag-padding: 4px;
+
+$layer-0: 0;
+$layer-10: 10;
+$layer-20: 20;
+$layer-30: 30;
+$layer-40: 40;
+$layer-50: 50;
+$layer-60: 60;
+$layer-70: 70;
