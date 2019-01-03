@@ -10,8 +10,8 @@ TESTING = (os.getenv("FLASK_TESTING") == 'True')
 
 logging.basicConfig(
     format='%(asctime)s %(levelname)-7s %(module)s.%(funcName)s - %(message)s') 
-# logging.getLogger().setLevel(logging.DEBUG if DEBUG and not TESTING else logging.INFO)
-logging.getLogger().setLevel(logging.DEBUG if DEBUG else logging.INFO)
+logging.getLogger().setLevel(logging.DEBUG if DEBUG and not TESTING else logging.INFO)
+# logging.getLogger().setLevel(logging.DEBUG if DEBUG else logging.INFO)
 logging.disable(logging.NOTSET)
 logging.info('Loading %s, app version = %s', __name__, os.getenv('CURRENT_VERSION_ID'))
 

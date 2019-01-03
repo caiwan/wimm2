@@ -21,12 +21,12 @@ class Service:
 
     def fetch_all_items(self):
         assert self._model_class
-        return self._model_class.select().where(self._model_class.is_deleted == False)
+        return self._model_class.select().where(self._model_class.is_deleted == False).get()
 
     def read_item(self, item_id):
         assert self._model_class
         item = self._model_class.select().where(self._model_class.id == item_id,
-                                                self._model_class.is_deleted == False)
+                                                self._model_class.is_deleted == False).get()
         if not item:
             raise peewee.DoesNotExist()
         return item
@@ -61,7 +61,11 @@ class Service:
         raise peewee.DoesNotExist()
 
     def serialize_item(self, item):
-        return model_to_dict(item)
+        try:
+            return model_to_dict(item)
+        except: 
+            logger.exception(str(item))
+            raise
 
 
 # -- Controller
@@ -101,8 +105,9 @@ class Controller(Resource):
                 item) for item in self._service.fetch_all_items(*args, **kwargs)]
             return(items_json, 200)
         except RuntimeError as e:
-            logging.info("Bad request: " + str(e))
-            return(items_json, 400)
+            msg = "Bad request: " + str(e)
+            logging.exception(msg)
+            return({'error': [msg]}, 400)
 
     def _create(self, item_json, *args, **kwargs):
         assert self._service
@@ -111,18 +116,21 @@ class Controller(Resource):
         try:
             return (self._service.serialize_item(self._service.create_item(item_json, *args, **kwargs)), 201)
         except RuntimeError as e:
-            logging.info("Bad request: " + str(e))
-            return(items_json, 400)
+            msg = "Bad request: " + str(e)
+            logging.exception(msg)
+            return({'error': [msg]}, 400)
 
     def _read(self, item_id, *args, **kwargs):
         _cls = self._get_cls()
         try:
             return (self._service.serialize_item(self._service.read_item(item_id, *args, **kwargs)), 200)
         except _cls.DoesNotExist as e:
+            # logging.exception(item_id)
             return({"error": [str(e)]}, 404)
         except RuntimeError as e:
-            logging.info("Bad request: " + str(e))
-            return(items_json, 400)
+            msg = "Bad request: " + str(e)
+            logging.exception(msg)
+            return({'error': [msg]}, 400)
 
         return({"error": ["FATAL: you should not be able to see this"]}, 500)
 
@@ -133,10 +141,12 @@ class Controller(Resource):
         try:
             return (self._service.serialize_item(self._service.update_item(item_id, item_json, *args, **kwargs)), 200)
         except _cls.DoesNotExist as e:
+            # logging.exception(' :'.join(item_id, item_json))
             return({"error": str(e)}, 404)
         except RuntimeError as e:
-            logging.info("Bad request: " + str(e))
-            return(items_json, 400)
+            msg = "Bad request: " + str(e)
+            logging.exception(msg)
+            return({'error': [msg]}, 400)
 
         return({"error": ["FATAL: you should not be able to see this"]}, 500)
 
@@ -147,8 +157,10 @@ class Controller(Resource):
         except _cls.DoesNotExist as e:
             return({"error": [str(e)]}, 404)
         except RuntimeError as e:
-            logging.info("Bad request: " + str(e))
-            return(items_json, 400)
+            msg = "Bad request: " + str(e)
+            logging.exception(msg)
+            return({'error': [msg]}, 400)
+
         return ('', 200)
 
 

@@ -281,56 +281,56 @@
         }
     },
     {
-        "id": 41,
+        "id": 42,
         "title": "Doctor",
         "parent": {
             "id": 17
         }
     },
     {
-        "id": 42,
+        "id": 43,
         "title": "Personal care",
         "parent": {
             "id": 17
         }
     },
     {
-        "id": 43,
+        "id": 44,
         "title": "Pharmacy",
         "parent": {
             "id": 17
         }
     },
     {
-        "id": 44,
+        "id": 45,
         "title": "Sports",
         "parent": {
             "id": 17
         }
     },
     {
-        "id": 45,
+        "id": 46,
         "title": "Accessories",
         "parent": {
             "id": 20
         }
     },
     {
-        "id": 46,
+        "id": 47,
         "title": "Clothing",
         "parent": {
             "id": 20
         }
     },
     {
-        "id": 47,
+        "id": 48,
         "title": "Electronics",
         "parent": {
             "id": 20
         }
     },
     {
-        "id": 48,
+        "id": 49,
         "title": "Taxi",
         "parent": {
             "id": 21

@@ -12,11 +12,13 @@ import peewee
 import app
 import components
 
+from categories import categoryService
+
 API_ROOT = components.BASE_PATH
 FILE_ROOT = os.path.dirname(__file__)
 
 @ddt.ddt
-class TestSmartImport(TestCase):
+class SmartImportTest(TestCase):
     args = {
         'content_type' : 'application/json'
     }
@@ -31,6 +33,9 @@ class TestSmartImport(TestCase):
         components.DB.connect()
         components.DB.create_tables(app.models, safe=True)
         self.app = app.app.test_client()
+
+        self._insert_categories("categories.json")
+
         pass
 
     def tearDown(self):
@@ -77,6 +82,8 @@ class TestSmartImport(TestCase):
             csv_data = csv.DictReader(io.StringIO(text), delimiter=',')
 
             response_json = self._upload_items(upload_type, csv_file)
+            self._validate_items(response_json['items'])
+
 
         # when
         response = self.app.get(API_ROOT + '/smartimport/', **self.upload_args)
@@ -104,9 +111,7 @@ class TestSmartImport(TestCase):
             csv_data = csv.DictReader(io.StringIO(text), delimiter=',')
 
             response_json = self._upload_items(upload_type, csv_file)
-
             imported_item_ids = [json['id'] for json in response_json['items']] 
-
             self.assertEqual(len(imported_item_ids), response_json['imported'])
 
         # when 
@@ -117,12 +122,16 @@ class TestSmartImport(TestCase):
                 # print(item_pair)
                 id = item_pair[0]
                 item_json = item_pair[1]
-                item_json['category'] = None
+                item_json['category'] = self._findCategory(item_json['category'])
                 item_json['tags'] = item_json['tags'].split(',')
-                result = self.app.post(API_ROOT + '/smartimport/'+str(id)+'/', data = json.dumps(item_json), **self.args) 
+                response = self.app.post(API_ROOT + '/smartimport/'+str(id)+'/', data = json.dumps(item_json), **self.args) 
                 self.assertEqual(200, response.status_code, msg=response.data)
 
                 response_json = json.loads(response.data)
+
+                self.assertTrue('stored_item' in response_json)
+                self.assertNotEqual(None, response_json['stored_item'])
+                # TODO: check data 
 
                 pass
 
@@ -157,3 +166,11 @@ class TestSmartImport(TestCase):
 
         return response_json
 
+    def _insert_categories(self,json_filename):
+        with open(os.path.join(FILE_ROOT, 'assets', json_filename), encoding="utf-8") as f:
+            json_data = json.loads(f.read())
+            categoryService.bulk_create_items(json_data)
+
+    def _findCategory(self, category_name):
+        categories = categoryService.find_by_title(category_name.lower())
+        return {"id": categories[0].id} if categories else None

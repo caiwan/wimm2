@@ -54,6 +54,12 @@ class ItemService(components.Service):
         else:
             return Item.select().where(Item.is_deleted == False).order_by(Item.created.desc())
 
+    def find_by_category(self, category_id):
+        return Item.select().where(
+            Item.category.id == category_id,
+            Item.is_deleted == False
+        ).order_by(Item.created.desc())
+
     def read_item(self, item_id):
         item = Item.get(Item.id == item_id,
             Item.is_deleted == False)
@@ -72,7 +78,7 @@ class ItemService(components.Service):
             raise RuntimeError("Date is missing")
         category = None
         if 'category' in item_json and item_json['category']:
-            category = Category.get(Category.id == int(item_json['category']['id']), Item.is_deleted == False)
+            category = Category.get(Category.id == int(item_json['category']['id']), Category.is_deleted == False)
         item = dict_to_model(Item, item_json)
         item.save()
         item.tags.add(tags)

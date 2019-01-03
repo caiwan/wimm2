@@ -10,7 +10,7 @@ import components
 API_BASE = components.BASE_PATH
 
 
-class TestCategoryCrud(TestCase):
+class CategoryCRUDTest(TestCase):
 
     post_args = {
         'content_type': 'application/json'
@@ -30,7 +30,7 @@ class TestCategoryCrud(TestCase):
         # given
         category = {
             'title' : 'Category',
-            'comment': 'Some catgory w/ comment'
+            'comment': 'Some catgory w/ comment',
             'parent' : None
         }
         # when
@@ -110,7 +110,8 @@ class TestCategoryCrud(TestCase):
         return category_json
 
     def _validate_category(self, expected, actual):
-        # self.assertEqual(expected['title'], actual['title'])
-        # self.assertEqual(expected['parent'], actual['parent']['id'])
+        self.assertEqual(expected['title'], actual['title'])
+        if expected['parent']:
+            self.assertEqual(expected['parent']['id'], actual['parent']['id'])
         pass
 

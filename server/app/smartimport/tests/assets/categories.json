@@ -1,0 +1,16 @@
+[
+    {"id": 1,"title": "Income","parent": null},
+    {"id": 2,"title": "Expense","parent": null},
+    
+    {"id": 3,"title": "Food and gorceries","parent": {"id":2}},
+    {"id": 4,"title": "Breakfast","parent": {"id":3}},
+    {"id": 5,"title": "Lunch","parent": {"id":3}},
+    {"id": 6,"title": "Dinner","parent": {"id":3}},
+
+    {"id": 7,"title": "Gorcery","parent": {"id":3}},
+    
+    {"id": 8,"title": "Restaurant","parent": {"id":3}},
+    {"id": 9,"title": "Coffe shop","parent": {"id":3}},
+
+    {"id": 10,"title": "Salary","parent": {"id":1}}
+]

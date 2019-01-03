@@ -70,12 +70,12 @@ class TagService(components.Service):
             if created_tags:
                 for tag in created_tags:
                     tag.save()
-                logging.debug("New tags:" + ", ".join([str(tag.tag) for tag in created_tags]))
+                logging.info("New tags:" + ", ".join([str(tag.tag) for tag in created_tags]))
 
             if created_fuzzies:
                 for fuzzy_tag in created_fuzzies:
                     fuzzy_tag.save()
-                logging.debug("New fuzzies:" + ", ".join([str(fuzzy.fuzzy) for fuzzy in created_fuzzies]))
+                logging.info("New fuzzies:" + ", ".join([str(fuzzy.fuzzy) for fuzzy in created_fuzzies]))
 
         return tag_items
 

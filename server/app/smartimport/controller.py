@@ -68,12 +68,15 @@ class SmartImportController(components.Controller):
         return self._delete(item_id)
 
     def post(self, item_id):
-        return self._service.store_item(item_id, request.json)
+        item = self._service.store_item(item_id, request.json)
+        return self._service.serialize_item(item)
 
     def put(self, item_id):
-        return self._service.store_item(item_id, request.json)
+        item = self._service.store_item(item_id, request.json)
+        return self._service.serialize_item(item)
 
     def patch(self, item_id):
-        return self._service.store_item(item_id, request.json)
+        item = self._service.store_item(item_id, request.json)
+        return self._service.serialize_item(item)
 
     

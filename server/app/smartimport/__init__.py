@@ -26,17 +26,17 @@ class SmartImportService(components.Service):
         return items
 
     def store_item(self, item_id, item_json):
-        item = self.read_item(item_id)
+        item = self.read_item(item_id).get()
 
         item.stored_item = None
-        if item.stored_item:
+        if item and item.stored_item:
             item.stored_item = itemService.update_item(item.stored_item.id, item_json)
         else:
             item.stored_item = itemService.create_item(item_json)
 
         item.save()
 
-        return item()
+        return item
 
     def create_item(self, item_json):
         (item_json, suggested_tags, suggested_category, stored_item_json) = self._sanitize_item(item_json)
