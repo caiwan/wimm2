@@ -33,7 +33,7 @@ class CategoryController(components.Controller):
         return self._delete(category_id)
 
 class CategoryImportExportController(components.Controller):
-    path = "/categories/import-export/"
+    path = "/categories/upload/"
     _service = categoryService
 
     def post(self):

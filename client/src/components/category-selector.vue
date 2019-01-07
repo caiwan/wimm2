@@ -1,18 +1,27 @@
 <template>
   <div class="category-container">
-    <input
-      type="text"
-      class="text"
-      autocomplete="off"
-      placeholder="Category"
-      required
-      v-model="categoryTitle"
-      @click="toggleDropdown"
-    >
-    <span @click="toggleDropdown">V</span>
+    <!-- TODO: add blur and focus properly -->
+
+    <!-- @blur="close" -->
+
+    <div class="category-input">
+      <input
+        type="text"
+        class="text"
+        autocomplete="off"
+        placeholder="Category"
+        required
+        v-model="categoryTitle"
+        @keydown.esc="close"
+        @click="toggle"
+      >
+      <span @click="toggle">V</span>
+    </div>
     <nav
       v-if="showCategorySelector"
       class="selector"
+      v-box-placement
+      @mousedown="deferBlur = true"
     >
       <ul class="selector-group">
         <category-item
@@ -25,6 +34,7 @@
       </ul>
     </nav>
   </div>
+  </div>
 </template>
 
 <script>
@@ -36,13 +46,15 @@ export default {
   props: {
     category: { type: Object, default: null }
   },
+
   components: {
     CategoryItem
   },
+
   data() {
     return {
       categoryTitle: this.category ? this.category.title : "",
-      showCategorySelector: false,
+      showCategorySelector: false, deferBlur: false
     };
   },
 
@@ -60,18 +72,25 @@ export default {
   },
 
   methods: {
-    toggleDropdown() {
+    toggle() {
       this.showCategorySelector = !this.showCategorySelector;
     },
 
     close() {
-      this.showCategorySelector = false;
+      if (!this.deferBlur) {
+        this.showCategorySelector = false;
+      }
+    },
+
+    open() {
+      this.showCategorySelector = true;
     },
 
     selected(category) {
       this.$emit("itemSelected", category);
       this.showCategorySelector = false;
       this.categoryTitle = category.title;
+      this.deferBlur = false;
     },
 
   },
@@ -86,12 +105,33 @@ export default {
     var counter = 0;
     zebraElements.forEach(element => {
       if (counter % 2 == 0) {
-        element.className = element.className + " even";
+        element.classList.add('even');
       } else {
-        element.className = element.className + " odd";
+        element.classList.add('odd');
       }
       counter++;
     });
+  },
+
+  directives: {
+    boxPlacement:
+      {
+        inserted(el, binding, vnode) {
+          const rect = el.getBoundingClientRect();
+          const p = rect.top + rect.height - window.innerHeight;
+          if (p > 0) {
+            el.classList.add('dropup');
+            console.log('up!', p);
+          } else {
+            console.log('down', p);
+          }
+        },
+
+        unbind(el, binding, vnode) {
+          el.classList.remove('dropup');
+        }
+
+      }
   }
 
 }

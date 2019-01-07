@@ -41,7 +41,7 @@ class CategoryImportExportTest(TestCase):
             json_data = json.loads(text)
 
             # when
-            response = self.app.post(API_BASE+'/categories/import-export/', data = {'file': (json_file, 'Untitled.json')}, **self.upload_args)
+            response = self.app.post(API_BASE+'/categories/upload/', data = {'file': (json_file, 'Untitled.json')}, **self.upload_args)
             self.assertEquals(200, response.status_code, msg = response.data)
             response_json = json.loads(response.data)
             
@@ -50,7 +50,7 @@ class CategoryImportExportTest(TestCase):
 
             # TBD
 
-            # response = self.app.get(API_BASE+'/categories/import-export/', **self.post_args)
+            # response = self.app.get(API_BASE+'/categories/', **self.post_args)
             # self.assertEquals(200, response.status_code, msg = response.data)
 
             # then

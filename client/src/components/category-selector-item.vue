@@ -6,20 +6,18 @@
     <span
       :class="{folder: hasChildren}"
       @click="select(model)"
-    >
-      {{ model.title }}
+    >{{ model.title }}
     </span>
     <ul
       class="selector-group"
       v-if="hasChildren"
     >
       <category-item
-        class="item"
-        v-for="model in model.children"
-        :key="model.id"
-        :model="model"
+        v-for="child in model.children"
+        :key="child.id"
+        :model="child"
         :max-depth="maxDepth"
-        v-on:itemSelected="select(model)"
+        v-on:itemSelected="select"
         :lod="lod+1"
       />
     </ul>
@@ -51,10 +49,11 @@ export default {
   methods: {
     select(item) {
       this.$emit('itemSelected', item);
-    }
+    },
+
   },
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
 </style>

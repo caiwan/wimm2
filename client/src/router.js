@@ -87,7 +87,7 @@ export default new Router({
     }
   }, {
     name: 'category-editor',
-    path: '/categoiries/',
+    path: '/categories/',
     components: {
       default: CategoryEditor,
       header: CategoryEditorHeader

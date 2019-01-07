@@ -129,11 +129,11 @@ input {
   &.price {
     flex-grow: 1;
     text-align: right;
-    width: 0;
+    // width: 0;
   }
-  &[type="file"] {
-    background-color: #1b9c0b;
-  }
+  // &[type="file"] {
+    // background-color: #1b9c0b;
+  // }
 }
 
 button {

@@ -6,7 +6,8 @@ export default {
   state: {
     items: [],
     itemTree: [],
-    isLoading: false
+    isLoading: false,
+    isLoaded: false
   },
 
   getters: {
@@ -45,11 +46,17 @@ export default {
 
   actions: {
     async fetchAll({ commit, state }) {
+      // TODO: This shit will fetch all the things over 9000 times
+      if (state.isLoading || state.isLoaded)
+        return;
+      state.isLoading = true;
       const categories = await io.categories.fetchAll();
       commit('clear');
       categories.forEach(category => {
         commit('put', category);
       });
+      state.isLoading = false;
+      state.isLoaded = true;
     },
 
     async addNew({ commit, state }, { parent, value }) {

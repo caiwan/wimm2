@@ -3,6 +3,81 @@
     id="smart-import"
     class="content"
   >
+    <section class="date-items">
+      <ul class="items">
+        <li
+          v-for="item in importedItems"
+          :key="item.id"
+          :id="'item-' + item.id"
+        >
+          <div class="item">
+            <span
+              class="imported-text"
+              :class="{'deleted' : deleted[item.id]}"
+            >
+              {{item.text}} &nbsp;
+            </span>
+            <template v-if="!deleted[item.id]">
+              <template v-if="editors[item.id]">
+                <item-form
+                  :id="'item-form-' + item.id"
+                  :tags="item.suggested_tags"
+                  :price="Number(item.price) < 0 ? -1 * Number(item.price) : '+' + item.price"
+                  :date="item.date"
+                  :category="item.suggested_category"
+                  :disabled="submitting[item.id]"
+                  @submit="saveItemWrapped(item.id, item, $event)"
+                ></item-form>
+              </template>
+              <template v-else>
+                <div class="category">
+                  {{item.category ? item.category.title : "Unassigned"}}&nbsp;
+                </div>
+                <div class="tag-list">
+                  <span
+                    v-for="(tag, index) in item.tags"
+                    :key="index"
+                  >{{ tag }}</span>
+                </div>
+                <span
+                  class="numeric price"
+                  :class="{positive: item.price > 0}"
+                >
+                  {{ item.price | money }}
+                </span>
+              </template>
+            </template>
+          </div>
+
+          <!-- Submit buttons -->
+          <div
+            class="button-group"
+            v-if="!deleted[item.id]"
+          >
+            <div class="gap"></div>
+            <button
+              class="i i-delete"
+              @click="deleteItemWrapped(item.id, item, $event)"
+            ></button>
+            <button
+              class="i"
+              :class="{'i-mode_edit': !editors[item.id], 'i-close': editors[item.id]}"
+              @click="editItem(item.id, $event)"
+            ></button>
+
+            <button
+              type="submit"
+              class="i i-save"
+              v-if="editors[item.id]"
+              :form="'item-form-' + item.id"
+              :disabled="submitting[item.id]"
+            ></button>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <!-- Import form and buttons -->
 
     <header>
       <h1>Import</h1>
@@ -56,21 +131,13 @@
       </div>
     </section>
 
-    <section>
-      <ul>
-        <li
-          v-for="item in importedItems"
-          :key="item.id"
-        >{{item.text}}
-        </li>
-      </ul>
-    </section>
-
   </div>
 
 </template>
 
 <script>
+import ItemForm from '@/components/item-form';
+
 import { mapActions, mapGetters, mapState } from "vuex";
 
 const _progress = () => {
@@ -86,12 +153,23 @@ const _progress = () => {
   });
 };
 
+const formatter = Intl.NumberFormat();
+
 export default {
+  components: {
+    ItemForm
+  },
   data() {
     return {
+      // save
+      editors: {},
+      submitting: {},
+      deleted: {},
+      // import
       progress: "",
       importProgress: "",
       importedFile: null,
+      // TODO: this should be loaded from the backend
       formats: [
         { id: 1, name: "OTP CSV" },
         { id: 2, name: "Regular" },
@@ -113,6 +191,7 @@ export default {
     ...mapActions("smartImport", [
       "setProperty",
       "doImport", "continueEdit",
+      "saveItem", "deleteItem",
       "hideUi"
     ]),
 
@@ -124,16 +203,68 @@ export default {
       this.importedFile = f;
     },
 
-    doContinueEditWrapped() {
+    async doContinueEditWrapped() {
       _progress();
-      this.continueEdit();
+      await this.continueEdit();
+      this.editors = {};
+      for (const item of this.importedItems) {
+        this.editors[item.id] = item;
+      }
+      // console.log({ editors: this.editors });
     },
 
-    doImportWrapped(e) {
+    async doImportWrapped(e) {
       _progress();
-      this.doImport({ type: this.selectedFormat.id, file: this.importedFile });
+      await this.doImport({ type: this.selectedFormat.id, file: this.importedFile });
+      this.editors = {};
+      for (const item of this.importedItems) {
+        this.editors[item.id] = item;
+      }
+    },
+
+    async saveItemWrapped(itemIndex, item, event) {
+      // console.log('Save', { itemIndex, item, event });
+      this.submitting[itemIndex] = item;
+      await this.saveItem({ itemIndex, item, storeItem: event.item });
+      this.$delete(this.submitting, itemIndex);
+      this.$delete(this.editors, itemIndex);
+    },
+
+    editItem(itemIndex, event) {
+      event.stopPropagation();
+      if (this.editors[itemIndex]) {
+        this.$delete(this.editors, itemIndex);
+      }
+      else {
+        this.$set(this.editors, itemIndex, true);
+      }
+    },
+
+    async deleteItemWrapped(itemIndex, item, event) {
+      event.stopPropagation();
+      if (this.editors[itemIndex]) {
+        this.$delete(this.editors, itemIndex);
+      }
+      this.submitting[itemIndex] = item;
+      this.deleteItem({ itemIndex, item });
+      this.$delete(this.submitting, itemIndex);
+      this.$delete(this.editors, itemIndex);
+      this.$set(this.deleted, itemIndex, true);
+
     }
 
+  },
+
+  filters: {
+    money(value) {
+      value = formatter.format(value);
+
+      if (value[0] !== '-') {
+        value = '+' + value;
+      }
+
+      return value;
+    }
   },
 
   beforeRouteLeave(to, from, next) {
@@ -145,9 +276,10 @@ export default {
 
 <style lang="scss" rel="stylesheet/scss">
 @import "../../scss/consts";
+@import "../../scss/date-items";
 
-#import-export {
-  height: 100%;
+.content {
+  // height: 100%;
 
   pre {
     border: $input-border;
@@ -155,5 +287,17 @@ export default {
     background: $bg-ui;
     font-size: smaller;
   }
+}
+
+.imported-text {
+  width: 100%;
+  &.deleted {
+    color: grey;
+    text-decoration: line-through;
+  }
+}
+
+.gap {
+  flex-grow: 1;
 }
 </style>

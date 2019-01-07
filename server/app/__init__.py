@@ -15,7 +15,6 @@ logging.getLogger().setLevel(logging.DEBUG if DEBUG and not TESTING else logging
 logging.disable(logging.NOTSET)
 logging.info('Loading %s, app version = %s', __name__, os.getenv('CURRENT_VERSION_ID'))
 
-
 # ---
 # fix import paths for internal imports
 cmd_folder = os.path.dirname(__file__)
@@ -77,3 +76,4 @@ smartimport.init(app, api, models)
 if not TESTING:
     components.database_init(app, models)
     components.database_connect()
+

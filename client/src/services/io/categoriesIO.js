@@ -35,6 +35,20 @@ export class Categories extends BaseIONode {
       method: 'DELETE',
       credentials: 'same-origin',
     })
+  }
 
+  /// 
+  addFromFile(file) {
+    const data = new FormData();
+    data.append('file', file);
+
+    return fetch(`${this.root}/categories/upload/`, {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: this.headers,
+      body: data
+    })
+      .then(v => v.json())
   }
 }
+

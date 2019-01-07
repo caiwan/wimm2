@@ -33,11 +33,52 @@
         />
       </li>
     </ul>
+    <!-- ! import-export -  -->
+    <h1>
+      Import
+    </h1>
+    <div>
+      <form @submit.prevent="doImportWrapped">
+        <div>
+          <input
+            type="file"
+            @change="setImportedFile($event.target.files[0])"
+          >
+        </div>
+        <button :disabled="!importedFile || isImporting">
+          Import JSON
+          <span v-if="isImporting">{{ importProgress }} </span>
+        </button>
+        <div v-if="importError">
+          Import failed for some with this reason:
+          <pre>{{ importError }}</pre>
+        </div>
+        <div v-if="importCount">
+          Imported {{ importCount }} items
+        </div>
+      </form>
+    </div>
+    <!--  -->
+    <h1>
+      Export
+    </h1>
+    <div>
+      <form @submit.prevent="doExportWrapped">
+        <button :disabled="isExporting">
+          Export categories as JSON
+          <span v-if="isExporting">{{ progress }}</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- /import-export -  -->
+
   </div>
 </template>
 
 <script>
 import { mapState, mapActions, mapMutations, mapGetters } from "vuex";
+import FileSaver from 'file-saver';
 import CategoryItem from './category-item.vue'
 export default {
   components: {
@@ -47,12 +88,22 @@ export default {
   data() {
     return {
       isAddingChild: false,
-      newChild: ''
+      newChild: '',
+      // --- import-export --- 
+      progress: '',
+      importProgress: '',
+      importedFile: null,
+      // --- /import-export --- 
+
     }
   },
 
   computed: {
     ...mapState("categories", { categories: "itemTree" }),
+    // --- import-export --- 
+    ...mapState('categoriesImportExport', ['isExporting', 'isImporting', 'exportedData']),
+    ...mapGetters('categoriesImportExport', ['exportFilename', 'importError', 'importCount'])
+    // --- /import-export --- 
   },
 
   created() {
@@ -66,6 +117,10 @@ export default {
       editCategory: 'edit'
     }),
 
+    // --- import-export --- 
+    ...mapActions('categoriesImportExport', ['doExport', 'setProperty', 'doImport', 'parseFile', 'hideUi']),
+    // --- /import-export --- 
+
     toggleSidebar() {
       this.toggleUI('showSidebar');
     },
@@ -78,7 +133,7 @@ export default {
     doneAddChild() {
       if (!this.isAddingChild)
         return;
-      console.log({ parent: null, value: this.newChild });
+      // console.log({ parent: null, value: this.newChild });
       this.addCategory({ parent: null, value: this.newChild });
       this.isAddingChild = false;
       this.newChild = '';
@@ -88,7 +143,60 @@ export default {
       this.isAddingChild = false;
       this.newChild = '';
     },
+
+    // --- import-export --- 
+
+    async doImportWrapped() {
+      const progress = () => {
+        setTimeout(() => {
+          if (this.isImporting) {
+            const dots = (this.importProgress.length + 1) % 4;
+
+            this.importProgress = '.'.repeat(dots);
+            setTimeout(progress, 400);
+          }
+          else {
+            this.importProgress = '';
+          }
+        })
+      };
+
+      progress();
+      await this.doImport(this.importedFile);
+      await this.$store.dispatch("categories/fetchAll");
+
+    },
+
+    async doExportWrapped() {
+      const progress = () => {
+        setTimeout(() => {
+          if (this.isImporting) {
+            const dots = (this.importProgress.length + 1) % 4;
+
+            this.importProgress = '.'.repeat(dots);
+            setTimeout(progress, 400);
+          }
+          else {
+            this.importProgress = '';
+          }
+        })
+      }
+
+      progress();
+
+      await this.doExport();
+      const blob = new Blob(this.exportedData, { type: 'application/octet-stream' });
+      FileSaver.saveAs(blob, this.exportFilename);
+    },
+
+
+    setImportedFile(file) {
+      this.importedFile = file;
+    }
+    // --- /import-export --- 
+
   },
+
 
   directives: {
     focus: function (el, binding) {

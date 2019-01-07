@@ -100,7 +100,7 @@ export default {
       return literalValue;
     },
     categorySelected(category) {
-      // console.log('Category selected', category);
+      console.log('Category selected', { id: category.id, title: category.title });
       this.pCategory = category;
     },
     submit() {

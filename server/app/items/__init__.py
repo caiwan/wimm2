@@ -121,7 +121,6 @@ class ItemService(components.Service):
 
     def delete_item(self, item_id):
         my_item = Item.get(Item.id == int(item_id))
-        logging.debug("Lolz ID " + str(item_id))
         if my_item:
             my_item.is_deleted = True
             my_item.changed()
@@ -130,14 +129,14 @@ class ItemService(components.Service):
         return None
 
     def serialize_item(self, item):
-        json = model_to_dict(item)
-        json['date'] = item.date.strftime(self._DATE_FMT)
-        json['tags'] = [str(tag.tag) for tag in item.tags]
+        item_json = model_to_dict(item)
+        item_json['date'] = item.date.strftime(self._DATE_FMT)
+        item_json['tags'] = [str(tag.tag) for tag in item.tags]
         if item.category:
-            json['category'] = {'id' : item.category.id, 'title': item.category.title}
+            item_json['category'] = {'id' : item.category.id, 'title': item.category.title}
         else:
-            json['category'] = None
-        return json
+            item_json['category'] = None
+        return item_json
 
 itemService = ItemService()
 

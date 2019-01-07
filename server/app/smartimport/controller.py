@@ -53,8 +53,9 @@ class SmartImportListController(components.Controller):
                 'items' : [self._service.serialize_item(item) for item in items] 
                 }, 200 )
         except RuntimeError as e:
-            logging.info("Bad request: " + str(e))
-            return(items_json, 400)
+            logging.exception("Bad request: " + str(e))
+            return ({'error':str(e)}, 400)
+
 
 
 class SmartImportController(components.Controller):

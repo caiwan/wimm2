@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="header-label">Smart bulk import of items (experimental)</div>
+    <div class="header-label">Smart import (experimental)</div>
     <div class="fill"></div>
   </div>
 </template>

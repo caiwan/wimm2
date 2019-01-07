@@ -23,3 +23,5 @@ LOGIN_DISABLED = True
 # Set secret keys for CSRF protection
 CSRF_SESSION_KEY = '8a7474974efcf76896aa84eea9cbe016bbc08828'
 CSRF_ENABLED = True
+
+JSONIFY_PRETTYPRINT_REGULAR = False

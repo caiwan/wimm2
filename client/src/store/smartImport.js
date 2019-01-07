@@ -48,33 +48,21 @@ export default {
       }
     },
 
-    // async doImport({ commit }) {
-    //   commit('setProperty', {
-    //     key: 'isImporting',
-    //     value: true
-    //   });
-
-    //   try {
-    //     const model = await io.smartImport.fetchAll();
-
-    //     commit('setProperty', {
-    //       key: 'importResponse',
-    //       value: model
-    //     });
-    //   } finally {
-    //     commit('setProperty', {
-    //       key: 'isImporting',
-    //       value: false
-    //     });
-    //   }
-    // },
-
-    async continueEdit() {
-      console.error('Not implemented');
+    async continueEdit({ commit }) {
+      const model = await io.smartImport.fetchAll();
+      commit('setProperty', {
+        key: 'importResponse',
+        value: model
+      });
     },
 
-    async saveItem() {
-      // hello
+    async saveItem({ commit }, { itemIndex, item, storeItem }) {
+      const model = await io.smartImport.saveItem(item, storeItem);
+      // TODO: update item 
+    },
+
+    async deleteItem({ commit }, { itemIndex, item }) {
+      await io.smartImport.deleteItem(item);
     },
 
     hideUi({
@@ -82,5 +70,6 @@ export default {
     }) {
       commit('hideUi')
     }
+
   }
 }

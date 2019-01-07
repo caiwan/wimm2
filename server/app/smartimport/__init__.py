@@ -14,6 +14,8 @@ from items import itemService
 class SmartImportService(components.Service):
     _model_class = SmartImportedItem
 
+    _DATE_FMT = "%Y-%m-%d"
+
     def fetch_all_unfinished_items(self):
         return SmartImportedItem.select().where(SmartImportedItem.is_deleted == False, SmartImportedItem.stored_item == None)
 
@@ -79,6 +81,8 @@ class SmartImportService(components.Service):
             item_json['suggested_cateogry'] = {'id' : item.category.id, 'title': item.category.title}
         else:
             item_json['suggested_category'] = None
+
+        item_json['date'] = item.date.strftime(self._DATE_FMT)
 
         return item_json
 

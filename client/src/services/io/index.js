@@ -2,10 +2,10 @@ import {
   Items,
   Stats,
   Tags
-} from './items';
+} from './itemsIO';
 
-import { Categories } from './categories';
-import { SmartImport } from './smartimport';
+import { Categories } from './categoriesIO';
+import { SmartImport } from './smartimportIO';
 
 class IO {
   constructor() {
