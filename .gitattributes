@@ -1,8 +1,1 @@
-* text eol=crlf
-
-# images
-*.png    binary !eol
-*.jpg    binary !eol
-*.gif    binary !eol
-*.xcf    binary !eol
-
+* text eol=lf
