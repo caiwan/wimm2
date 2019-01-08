@@ -1,5 +1,5 @@
 version: '2.0'
-maintainer: "operation@shiwaforce.com"
+maintainer: "caiwan"
 
 plan:
     default: docker-compose.yml
