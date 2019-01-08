@@ -1,7 +1,7 @@
 from flask import request
 import components
 
-from budget import budgetService, savingService
+from estateplan import budgetService, assetService
 
 
 class BudgetListController(components.Controller):
@@ -16,7 +16,7 @@ class BudgetListController(components.Controller):
 
 
 class BudgetController(components.Controller):
-    path = "/budget/<int:budget_id>/"
+    path = "/estate/budget/<int:budget_id>/"
     _service = budgetService
 
     def get(self, category_id):
@@ -29,9 +29,9 @@ class BudgetController(components.Controller):
         return self._delete(category_id)
 
 
-class SavingListController(components.Controller):
-    path = "/savings/"
-    _service = savingService
+class AssetListController(components.Controller):
+    path = "/estate/assets/"
+    _service = assetService
 
     def get(self):
         return self._fetch_all()
@@ -40,9 +40,9 @@ class SavingListController(components.Controller):
         return self._create(request.json)
 
 
-class SavingController(components.Controller):
-    path = "/savings<int:category_id>/"
-    _service = savingService
+class AssetController(components.Controller):
+    path = "/estate/assets<int:category_id>/"
+    _service = assetService
 
     def get(self, category_id):
         return self._read(category_id)

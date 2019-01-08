@@ -63,14 +63,14 @@ import settings
 import items
 import tags
 import categories
-import budget
+import estateplan
 import smartimport 
 
 settings.init(app, api, models)
 items.init(app, api, models)
 tags.init(app, api, models)
 categories.init(app, api, models)
-budget.init(app, api, models)
+estateplan.init(app, api, models)
 smartimport.init(app, api, models)
 
 if not TESTING:
