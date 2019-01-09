@@ -103,7 +103,12 @@ export default {
       console.log('Category selected', { id: category.id, title: category.title });
       this.pCategory = category;
     },
-    submit() {
+    submit(event) {
+      event.preventDefault();
+      if (this.pCategory == null) {
+        console.error('No category selected');
+        return;
+      }
       let item = {
         price: this.rawPrice(),
         date: this.pDate,

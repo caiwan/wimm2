@@ -93,7 +93,14 @@ export default {
     keydown(e) {
       this.pressedKey = e.key;
 
-      if (e.key === 'Backspace') {
+      if (e.key === 'Escape') {
+        // TODO Close on esc
+        e.preventDefault();
+        this.choiceListVisible = false;
+        this.$emit('blur');
+        return;
+      }
+      else if (e.key === 'Backspace') {
         if (!this.currentTag) {
           e.preventDefault();
           this.currentTag = this.pTags.pop();
@@ -264,7 +271,6 @@ export default {
             this.pChoices = value;
             this.selectedIndex = UNDEFINED;
             this.choiceListVisible = this.pChoices.length > 0;
-
             this.dropup = this.$refs.tagInput.getBoundingClientRect().top / window.innerHeight >= 0.4;
           });
       }

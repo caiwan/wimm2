@@ -80,8 +80,8 @@ $tag-font: sans-serif;
 $tag-margin: 3px 0 3px 3px;
 $tag-padding: 0 4px;
 $tag-size: 16px;
-// $tag-bg-even: ;
-// $tag-bg-odd:
+$tag-selector-offset: 20px; // Offset where the coices shall appear on upwards drop
+
 $error-background: #ebc1c1;
 $error-color: #501414;
 $choices-tag-padding: 4px;

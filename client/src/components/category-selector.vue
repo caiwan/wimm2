@@ -1,10 +1,8 @@
 <template>
   <div class="category-container">
-    <!-- TODO: add blur and focus properly -->
-
-    <!-- @blur="close" -->
 
     <div class="category-input">
+      <!-- TODO: proper keyboard mgmt like it was done in tags  -->
       <input
         type="text"
         class="text"
@@ -12,8 +10,10 @@
         placeholder="Category"
         required
         v-model="categoryTitle"
+        @input="inputChanged"
         @keydown.esc="close"
         @click="toggle"
+        @blur="close"
       >
       <span @click="toggle">V</span>
     </div>
@@ -28,18 +28,31 @@
           v-for="model in filteredChoices"
           :key="model.id"
           :model="model"
-          :max-depth="isFiltered ? 0 : -1"
+          :max-depth="isFiltered ? 1 : 0"
           v-on:itemSelected="selected"
         />
       </ul>
     </nav>
-  </div>
   </div>
 </template>
 
 <script>
 import CategoryItem from './category-selector-item.vue';
 import { mapState, mapActions, mapMutations, mapGetters } from "vuex";
+
+const zebraify = function (element) {
+  // QnD hack for zebra stripes
+  const zebraElements = [].slice.call(element.getElementsByClassName('zebra'));
+  var counter = 0;
+  zebraElements.forEach(element => {
+    if (counter % 2 == 0) {
+      element.classList.add('even');
+    } else {
+      element.classList.add('odd');
+    }
+    counter++;
+  });
+}
 
 export default {
   name: 'CategorySelector',
@@ -53,8 +66,9 @@ export default {
 
   data() {
     return {
-      categoryTitle: this.category ? this.category.title : "",
-      showCategorySelector: false, deferBlur: false
+      categoryTitle: this.category != null ? this.category.title : "",
+      showCategorySelector: false, deferBlur: false,
+      filteredChoices: [], _requestUpdate: false, _isUpdating: false
     };
   },
 
@@ -63,12 +77,12 @@ export default {
       categoryTree: 'itemTree',
       categoryList: 'items'
     }),
-    filteredChoices() {
-      return this.categoryTree;
-    },
+
     isFiltered() {
-      return this.categoryTitle && this.categoryTitle != this.category.title;
-    },
+      const p = this.filteredChoices != this.categoryTree;
+      console.log('p', p);
+      return p
+    }
   },
 
   methods: {
@@ -93,24 +107,30 @@ export default {
       this.deferBlur = false;
     },
 
+    inputChanged(event) {
+      this.$data._requestUpdate = true;
+      this.showCategorySelector = true;
+    }
+
   },
 
-  created() {
-    this.$store.dispatch('categories/fetchAll');
+  async created() {
+    await this.$store.dispatch('categories/fetchAll');
+    this.filteredChoices = this.categoryTree;
   },
 
-  updated() {
-    // QnD hack for zebra stripes
-    const zebraElements = [].slice.call(document.getElementsByClassName('zebra'));
-    var counter = 0;
-    zebraElements.forEach(element => {
-      if (counter % 2 == 0) {
-        element.classList.add('even');
+  async updated() {
+    zebraify(this.$el);
+
+    if (this.$data._requestUpdate) {
+      this.$data._requestUpdate = false;
+      if (this.categoryTitle === "") {
+        this.filteredChoices = this.categoryTree;
       } else {
-        element.classList.add('odd');
+        // This will yield children too
+        this.filteredChoices = this.categoryList.filter(item => item != null && item.title.toLowerCase().startsWith(this.categoryTitle.toLowerCase()));
       }
-      counter++;
-    });
+    };
   },
 
   directives: {
