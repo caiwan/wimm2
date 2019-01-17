@@ -90,6 +90,9 @@ export default {
     };
   },
   methods: {
+    focus(e) {
+      this.$refs.tagInput.focus();
+    },
     keydown(e) {
       this.pressedKey = e.key;
 

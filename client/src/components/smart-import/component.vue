@@ -21,21 +21,22 @@
               <template v-if="editors[item.id]">
                 <item-form
                   :id="'item-form-' + item.id"
-                  :tags="item.suggested_tags"
+                  :tags="getTags(item)"
                   :price="Number(item.price) < 0 ? -1 * Number(item.price) : '+' + item.price"
                   :date="item.date"
-                  :category="item.suggested_category"
+                  :category="item | getCategory"
                   :disabled="submitting[item.id]"
-                  @submit="saveItemWrapped(item.id, item, $event)"
+                  @submit="saveItemWrapped(item, $event)"
                 ></item-form>
               </template>
               <template v-else>
+                <!-- TODO: fix this part  -->
                 <div class="category">
-                  {{item.category ? item.category.title : "Unassigned"}}&nbsp;
+                  {{ item | getCategoryTitle }}&nbsp;
                 </div>
                 <div class="tag-list">
                   <span
-                    v-for="(tag, index) in item.tags"
+                    v-for="(tag, index) in getTags(item)"
                     :key="index"
                   >{{ tag }}</span>
                 </div>
@@ -222,12 +223,14 @@ export default {
       }
     },
 
-    async saveItemWrapped(itemIndex, item, event) {
-      // console.log('Save', { itemIndex, item, event });
-      this.submitting[itemIndex] = item;
-      await this.saveItem({ itemIndex, item, storeItem: event.item });
+    async saveItemWrapped(item, event) {
+      const itemIndex = item.id;
+      this.$set(this.submitting, itemIndex, true);
+      await this.saveItem({ item, storeItem: event.item });
+      this.$delete(this.submitting, item.id);
+      this.$delete(this.editors, item.id);
+      this.$set(this.submitting, itemIndex, false);
       this.$delete(this.submitting, itemIndex);
-      this.$delete(this.editors, itemIndex);
     },
 
     editItem(itemIndex, event) {
@@ -242,20 +245,25 @@ export default {
 
     async deleteItemWrapped(itemIndex, item, event) {
       event.stopPropagation();
+      this.$set(this.submitting, itemIndex, true);
       if (this.editors[itemIndex]) {
         this.$delete(this.editors, itemIndex);
       }
-      this.submitting[itemIndex] = item;
       this.deleteItem({ itemIndex, item });
       this.$delete(this.submitting, itemIndex);
       this.$delete(this.editors, itemIndex);
       this.$set(this.deleted, itemIndex, true);
+      this.$delete(this.submitting, itemIndex);
+    },
 
-    }
+    getTags: (item) => (item.stored_item != null && item.stored_item.tags != null) ? item.stored_item.tags : (item.suggested_tags || []),
 
   },
 
   filters: {
+    getCategory: (item) => (item.stored_item != null && item.stored_item.category != null) ? item.stored_item.category : (item.suggested_category || null),
+    getCategoryTitle: (item) => (item.stored_item != null && item.stored_item.category != null) ? item.stored_item.category.title : (item.suggested_category || 'Unassigned'),
+
     money(value) {
       value = formatter.format(value);
 

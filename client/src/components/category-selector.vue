@@ -11,7 +11,7 @@
         required
         v-model="categoryTitle"
         @input="inputChanged"
-        @keydown.esc="close"
+        @keydown="keydown"
         @click="toggle"
         @blur="close"
       >
@@ -24,12 +24,15 @@
       @mousedown="deferBlur = true"
     >
       <ul class="selector-group">
+        <!-- TODO: select item w/ mouse hover + model -->
         <category-item
           v-for="model in filteredChoices"
           :key="model.id"
           :model="model"
-          :max-depth="isFiltered ? 1 : 0"
+          :selectedItem="selectedCategory"
+          :max-depth="categoryTreeMaxDepth"
           v-on:itemSelected="selected"
+          v-on:selectionChanged="selectionChanged"
         />
       </ul>
     </nav>
@@ -40,6 +43,7 @@
 import CategoryItem from './category-selector-item.vue';
 import { mapState, mapActions, mapMutations, mapGetters } from "vuex";
 
+// TODO: -> util
 const zebraify = function (element) {
   // QnD hack for zebra stripes
   const zebraElements = [].slice.call(element.getElementsByClassName('zebra'));
@@ -67,8 +71,11 @@ export default {
   data() {
     return {
       categoryTitle: this.category != null ? this.category.title : "",
+      selectedCategory: null, _selectedIndex: 0, _selectDirection: 1,
       showCategorySelector: false, deferBlur: false,
-      filteredChoices: [], _requestUpdate: false, _isUpdating: false
+      filteredChoices: [], _requestUpdate: false, _isUpdating: false,
+      // isFiltered: false,
+      // categoryTreeMaxDepth: 0
     };
   },
 
@@ -78,11 +85,8 @@ export default {
       categoryList: 'items'
     }),
 
-    isFiltered() {
-      const p = this.filteredChoices != this.categoryTree;
-      console.log('p', p);
-      return p
-    }
+    isFiltered: () => this.filteredChoices !== this.categoryTree,
+    categoryTreeMaxDepth: () => this.isFiltered ? 0 : -1,
   },
 
   methods: {
@@ -100,23 +104,51 @@ export default {
       this.showCategorySelector = true;
     },
 
+    keydown(event) {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        this.close();
+      }
+      else if (event.key === 'Enter' || event.key === 'Tab') {
+        event.preventDefault();
+        this.selected(this.selectedCategory);
+      }
+      else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+        event.preventDefault();
+        const choiseList = this.isFiltered ? this.filteredChoices : this.categoryList;
+        const choiceLength = choiseList.length;
+        const direction = this.$data._selectDirection;
+        if (event.key === 'ArrowUp') { this.$data._selectedIndex = this.$data._selectedIndex + direction; }
+        else if (event.key === 'ArrowDown') { this.$data._selectedIndex = this.$data._selectedIndex - direction; }
+        if (this.$data._selectedIndex >= choiceLength) { this.$data._selectedIndex = 0; }
+        if (this.$data._selectedIndex < 0) { this.$data._selectedIndex = choiceLength; }
+        this.selectedCategory = choiseList[this.$data._selectedIndex];
+      }
+    },
+
     selected(category) {
       this.$emit("itemSelected", category);
       this.showCategorySelector = false;
       this.categoryTitle = category.title;
       this.deferBlur = false;
+      this.$emit("blur");
+    },
+
+    selectionChanged(category) {
+      // TODO -> hover
     },
 
     inputChanged(event) {
       this.$data._requestUpdate = true;
       this.showCategorySelector = true;
-    }
-
+    },
   },
 
   async created() {
     await this.$store.dispatch('categories/fetchAll');
     this.filteredChoices = this.categoryTree;
+    // TODO: select selected automatically
+    this.selectedCategory = this.categoryList[0];
   },
 
   async updated() {
@@ -126,11 +158,17 @@ export default {
       this.$data._requestUpdate = false;
       if (this.categoryTitle === "") {
         this.filteredChoices = this.categoryTree;
+        // this.isFiltered = false;
       } else {
         // This will yield children too
         this.filteredChoices = this.categoryList.filter(item => item != null && item.title.toLowerCase().startsWith(this.categoryTitle.toLowerCase()));
       }
     };
+  },
+
+  watch: {
+    filteredChoices() {
+    }
   },
 
   directives: {
@@ -142,8 +180,10 @@ export default {
           if (p > 0) {
             el.classList.add('dropup');
             console.log('up!', p);
+            vnode.context.$data._selectDirection = -1;
           } else {
             console.log('down', p);
+            vnode.context.$data._selectDirection = 1;
           }
         },
 

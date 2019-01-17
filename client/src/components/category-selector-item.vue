@@ -1,12 +1,12 @@
 <template>
   <li
     class="selector-item zebra"
-    v-if="maxDepth<=0 || lod<maxDepth"
+    v-if="maxDepth<0 || lod<maxDepth"
   >
     <span
-      :class="{folder: hasChildren}"
+      :class="{folder: hasChildren, selected: model === selectedItem}"
       @click="select(model)"
-    >{{ model.title }}
+    >{{ model.title }} : {{maxDepth}} :{{lod}}
     </span>
     <ul
       class="selector-group"
@@ -18,6 +18,7 @@
         :model="child"
         :max-depth="maxDepth"
         v-on:itemSelected="select"
+        :selectedItem="selectedItem"
         :lod="lod+1"
       />
     </ul>
@@ -31,6 +32,7 @@ export default {
     model: Object,
     maxDepth: Number,
     lod: { default: 0, type: Number },
+    selectedItem: { default: null, type: Object }
   },
   data() {
     return {
@@ -50,10 +52,26 @@ export default {
     select(item) {
       this.$emit('itemSelected', item);
     },
-
   },
+  // watch: {
+  //   model(vOld, vNew) {
+  //     console.log('Lolz 2 updated', this.maxDepth);
+  //   },
+  //   maxDepth(vold, vnew) {
+  //     console.log('Lolz updated', this.maxDepth);
+  //   }
+  // },
+
+  // updated() {
+  //   console.log('Lolz3 updated', this.maxDepth);
+  // }
 };
 </script>
 
 <style lang="scss" scoped>
+.selector-item {
+  .selected {
+    color: red;
+  }
+}
 </style>

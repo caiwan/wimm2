@@ -1,27 +1,51 @@
 import io from '@/services/io';
 
+function copyObject(target, source) {
+  for (const key in source) {
+    if (source.hasOwnProperty(key)) {
+      if (typeof source[key] == 'function') continue;
+      else if (typeof source[key] == 'object' && target[key] != null) copyObject(target[key], source[key]); // If there's any loop in there, well ... 
+      // TODO Array?
+      else target[key] = source[key];
+    }
+  }
+  return target;
+}
+
 export default {
   namespaced: true,
   state: {
     isImporting: false,
     importResponse: {},
-    // type: 0,
   },
+
   getters: {
     importError: state => state.importResponse.error,
     importCount: state => state.importResponse.items ? state.importResponse.items.length : 0,
     importedItems: state => state.importResponse.items
   },
+
   mutations: {
     setProperty: (state, {
       key,
       value
     }) => state[key] = value,
 
+    editResponse: (state, item) => {
+      const stateItems = state.importResponse.items;
+      const index = stateItems.findIndex((elem) => {
+        return elem.id === item.id;
+      });
+      // we get back a new object, and we need to get setters to be invoked
+      var storedItem = stateItems[index];
+      copyObject(storedItem, item);
+    },
+
     hideUi: state => {
       state.importResponse = {};
     }
   },
+
   actions: {
     setProperty: ({
       commit
@@ -56,9 +80,9 @@ export default {
       });
     },
 
-    async saveItem({ commit }, { itemIndex, item, storeItem }) {
+    async saveItem({ commit }, { item, storeItem }) {
       const model = await io.smartImport.saveItem(item, storeItem);
-      // TODO: update item 
+      commit('editResponse', model);
     },
 
     async deleteItem({ commit }, { itemIndex, item }) {

@@ -1,6 +1,8 @@
 # coding=utf-8
 import io
 
+import logging
+
 from playhouse.shortcuts import *
 
 import components
@@ -28,12 +30,13 @@ class SmartImportService(components.Service):
         return items
 
     def store_item(self, item_id, item_json):
-        item = self.read_item(item_id).get()
+        item = self.read_item(item_id)
 
-        item.stored_item = None
         if item and item.stored_item:
+            logging.info('Update stored item id={} stored_id={}'.format(item_id, item.stored_item.id))
             item.stored_item = itemService.update_item(item.stored_item.id, item_json)
         else:
+            logging.info('Create stored item id={}'.format(item_id))
             item.stored_item = itemService.create_item(item_json)
 
         item.save()

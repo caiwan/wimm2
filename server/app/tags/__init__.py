@@ -27,8 +27,8 @@ class TagService(components.Service):
         words = [word for word in self._make_fuzzy(search_query.split(" ")) if word]
         fuzzies = []
         for word in words :
-            fuzzy = FuzzyTag.select().where(FuzzyTag.fuzzy.contains(word)).objects()
-            fuzzies.extend(fuzzy)
+            fuzzy = FuzzyTag.select().where(FuzzyTag.fuzzy.contains(word[0]), FuzzyTag.type == word[1])
+            fuzzies.extend(list(fuzzy))
 
         for fuzzy in fuzzies:
             ld = Levenshtein.distance(str(fuzzy.tag.tag), search_query)
@@ -81,7 +81,7 @@ class TagService(components.Service):
 
     def _create_tag_from_string(self, tag_str):
         tag = Tag(tag=tag_str)
-        fuzzies = [FuzzyTag(tag=tag, fuzzy=fuzzy_word) for fuzzy_word in self._make_fuzzy(tag_str.split(" ")) if fuzzy_word]
+        fuzzies = [FuzzyTag(tag=tag, fuzzy=fuzzy_word[0], type=fuzzy_word[1]) for fuzzy_word in self._make_fuzzy(tag_str.split(" ")) if fuzzy_word]
         return (tag,fuzzies)
 
     _dmeta = fuzzy.DMetaphone()
@@ -90,10 +90,10 @@ class TagService(components.Service):
     def _make_fuzzy(self, terms):
         for word in terms:
             slug = slugify(word).upper()
-            yield slug
+            yield (slug, 0)
             dmeta = self._dmeta(slug)[0]
-            yield dmeta.decode("utf-8") if dmeta else None
-            yield self._nysiis(slug)
+            yield (dmeta.decode("utf-8") if dmeta else None, 1)
+            yield (self._nysiis(slug), 2)
 
 def init(app, api, models):
     from tags.controller import TagAutoCompleteController

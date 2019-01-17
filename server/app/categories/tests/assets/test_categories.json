@@ -2,17 +2,20 @@
     {
         "id": 1,
         "title": "Income",
-        "parent": null
+        "parent": null,
+        "order": 1
     },
     {
         "id": 2,
         "title": "Expense",
-        "parent": null
+        "parent": null,
+        "order": 2
     },
     {
         "id": 3,
         "title": "Debt & Loan",
-        "parent": null
+        "parent": null,
+        "order": 3
     },
     {
         "id": 4,
@@ -61,14 +64,16 @@
         "title": "Education",
         "parent": {
             "id": 2
-        }
+        },
+        "order":1
     },
     {
         "id": 11,
         "title": "Entertainment",
         "parent": {
             "id": 2
-        }
+        },
+        "order":2
     },
     {
         "id": 12,

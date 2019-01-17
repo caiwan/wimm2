@@ -9,3 +9,4 @@ class Tag(components.BaseModel):
 class FuzzyTag(components.BaseModel):
     tag = peewee.ForeignKeyField(Tag)
     fuzzy = peewee.TextField(null=False)
+    type = peewee.IntegerField(null=False)

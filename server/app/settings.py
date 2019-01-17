@@ -7,7 +7,9 @@ class AppSettingsController(components.Controller):
     def get(self):
         return ({
             'root': '',
-            'csrftoken': 'have_some_csrftoken_for_now' # I will somve this, I swear
+            'csrftoken': 'i_swear_i_ill_set_up_my_csrf_tokens_at_sone_point',
+            'smartimport': {},
+            'estateplan': {},
         },200)
 
 def init(app, api, models):

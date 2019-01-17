@@ -41,9 +41,7 @@ class SmartImportListController(components.Controller):
 
         except RuntimeError as e:
             logging.info("Bad request: " + str(e))
-            return(items_json, 400)
-
-        return self._service.get_unfinished_items()
+            return ({'error':str(e)}, 400)
 
     def post(self):
         try:

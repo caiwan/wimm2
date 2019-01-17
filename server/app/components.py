@@ -21,12 +21,11 @@ class Service:
 
     def fetch_all_items(self):
         assert self._model_class
-        return self._model_class.select().where(self._model_class.is_deleted == False).get()
+        return self._model_class.get(self._model_class.is_deleted == False)
 
     def read_item(self, item_id):
         assert self._model_class
-        item = self._model_class.select().where(self._model_class.id == item_id,
-                                                self._model_class.is_deleted == False).get()
+        item = self._model_class.get(self._model_class.id == item_id, self._model_class.is_deleted == False)
         if not item:
             raise peewee.DoesNotExist()
         return item
@@ -62,7 +61,9 @@ class Service:
 
     def serialize_item(self, item):
         try:
-            return model_to_dict(item)
+            item_json = model_to_dict(item, exclude=['is_deleted'])
+            del item_json['is_deleted'] # Exclude does nothing :( 
+            return item_json
         except: 
             logger.exception(str(item))
             raise
@@ -132,7 +133,6 @@ class Controller(Resource):
             logging.exception(msg)
             return({'error': [msg]}, 400)
 
-        return({"error": ["FATAL: you should not be able to see this"]}, 500)
 
     def _update(self, item_id, item_json, *args, **kwargs):
         _cls = self._get_cls()
@@ -148,7 +148,6 @@ class Controller(Resource):
             logging.exception(msg)
             return({'error': [msg]}, 400)
 
-        return({"error": ["FATAL: you should not be able to see this"]}, 500)
 
     def _delete(self, item_id, *args, **kwargs):
         _cls = self._get_cls()

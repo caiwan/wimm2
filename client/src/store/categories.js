@@ -5,6 +5,7 @@ export default {
 
   state: {
     items: [],
+    itemMap: [],
     itemTree: [],
     isLoading: false,
     isLoaded: false
@@ -14,17 +15,19 @@ export default {
   },
 
   mutations: {
-    clear: (state) => { state.items = [], state.itemTree = [] },
+    clear: (state) => { state.items = [], state.itemMap = [], state.itemTree = [] },
     put: (state, item) => {
       if (!item.hasOwnProperty('children'))
         item['children'] = []
-      state.items[item.id] = item;
+      state.itemMap[item.id] = item;
       if (item.parent) {
         const pid = item.parent.id
-        state.items[pid].children.push(state.items[item.id]);
+        state.itemMap[pid].children.push(state.itemMap[item.id]);
       } else {
-        state.itemTree.push(state.items[item.id]);
+        state.itemTree.push(state.itemMap[item.id]);
       }
+      state.items.push(item);
+      // console.log('item', item.id);
     },
 
     edit: (state, item) => {

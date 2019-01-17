@@ -7,12 +7,14 @@
       class="category-selector"
       v-on:itemSelected="categorySelected"
       :category="pCategory"
+      @blur="focusTags()"
     ></categories>
     <tags
       :choices="autocomplete()"
       :tags="pTags"
       :disabled="disabled"
       @blur="focusPrice()"
+      ref="tags"
     ></tags>
     <input
       type="text"
@@ -102,6 +104,7 @@ export default {
     categorySelected(category) {
       console.log('Category selected', { id: category.id, title: category.title });
       this.pCategory = category;
+
     },
     submit(event) {
       event.preventDefault();
@@ -124,9 +127,8 @@ export default {
         }
       });
     },
-    focusPrice() {
-      this.$refs.price.focus();
-    }
+    focusTags: () => this.$refs.tags.focus(),
+    focusPrice: () => this.$refs.price.focus(),
   },
   watch: {
     date(nextValue) {
