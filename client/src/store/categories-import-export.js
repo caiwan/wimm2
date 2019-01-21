@@ -22,7 +22,7 @@ export default {
 
       const data = [];
       for (let item of models) {
-        console.log('Helloka', item);
+        // console.log('Helloka', item);
         data.push({
           'id': item.id,
           'title': item.title,
@@ -51,16 +51,20 @@ export default {
         commit('setProperty', { key: 'isExporting', value: false });
       }
     },
-    async doImport({ commit }, file) {
+    async doImport({ commit, dispatch }, file) {
       commit('setProperty', { key: 'isImporting', value: true });
 
       try {
         const model = await io.categories.addFromFile(file);
         commit('setProperty', { key: 'importResponse', value: model });
+        // TODO Put this response into the category store without 
+        // requiring to reload everything once again
       }
       finally {
         commit('setProperty', { key: 'isImporting', value: false });
       }
+
+      await dispatch('categories/reload', {}, { root: true });
     },
     hideUi({ commit }) {
       commit('hideUi')

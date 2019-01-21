@@ -1,4 +1,5 @@
 import io from '@/services/io';
+import { relativeTimeRounding } from 'moment';
 
 export default {
   namespaced: true,
@@ -48,6 +49,10 @@ export default {
   },
 
   actions: {
+    async reload({ dispatch, state }) {
+      state.isLoaded = false;
+      await dispatch('fetchAll');
+    },
     async fetchAll({ commit, state }) {
       // TODO: This shit will fetch all the things over 9000 times
       if (state.isLoading || state.isLoaded)
