@@ -1,12 +1,12 @@
 <template>
   <li
     class="selector-item zebra"
-    v-if="maxDepth<0 || lod<maxDepth"
+    v-if="maxDepth<0 || lod<=maxDepth"
   >
     <span
       :class="{folder: hasChildren, selected: model === selectedItem}"
       @click="select(model)"
-    >{{ model.title }} : {{maxDepth}} :{{lod}}
+    >{{ model.title }}
     </span>
     <ul
       class="selector-group"
@@ -29,8 +29,8 @@
 export default {
   name: "CategoryItem",
   props: {
-    model: Object,
-    maxDepth: Number,
+    model: { required: true, type: Object },
+    maxDepth: { default: -1, type: Number },
     lod: { default: 0, type: Number },
     selectedItem: { default: null, type: Object }
   },

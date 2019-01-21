@@ -22,6 +22,7 @@
       class="selector"
       v-box-placement
       @mousedown="deferBlur = true"
+      @keydown="keydown"
     >
       <ul class="selector-group">
         <!-- TODO: select item w/ mouse hover + model -->
@@ -74,7 +75,7 @@ export default {
       selectedCategory: null, _selectedIndex: 0, _selectDirection: 1,
       showCategorySelector: false, deferBlur: false,
       filteredChoices: [], _requestUpdate: false, _isUpdating: false,
-      // isFiltered: false,
+      isFiltered: false,
       // categoryTreeMaxDepth: 0
     };
   },
@@ -85,11 +86,11 @@ export default {
       categoryList: 'items'
     }),
 
-    isFiltered: () => this.filteredChoices !== this.categoryTree,
-    categoryTreeMaxDepth: () => this.isFiltered ? 0 : -1,
+    categoryTreeMaxDepth() { return this.isFiltered ? 0 : -1; },
   },
 
   methods: {
+
     toggle() {
       this.showCategorySelector = !this.showCategorySelector;
     },
@@ -156,19 +157,16 @@ export default {
 
     if (this.$data._requestUpdate) {
       this.$data._requestUpdate = false;
+      this.categoryTitle = this.categoryTitle.trim();
       if (this.categoryTitle === "") {
         this.filteredChoices = this.categoryTree;
-        // this.isFiltered = false;
+        this.isFiltered = false;
       } else {
         // This will yield children too
         this.filteredChoices = this.categoryList.filter(item => item != null && item.title.toLowerCase().startsWith(this.categoryTitle.toLowerCase()));
+        this.isFiltered = true;
       }
     };
-  },
-
-  watch: {
-    filteredChoices() {
-    }
   },
 
   directives: {
@@ -179,10 +177,10 @@ export default {
           const p = rect.top + rect.height - window.innerHeight;
           if (p > 0) {
             el.classList.add('dropup');
-            console.log('up!', p);
+            console.log('drop: up', p);
             vnode.context.$data._selectDirection = -1;
           } else {
-            console.log('down', p);
+            console.log('drop: down', p);
             vnode.context.$data._selectDirection = 1;
           }
         },
