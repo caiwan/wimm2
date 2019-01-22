@@ -9,7 +9,7 @@ DEBUG = (os.getenv("FLASK_DEBUG") == 'True')
 TESTING = (os.getenv("FLASK_TESTING") == 'True')
 
 logging.basicConfig(
-    format='%(asctime)s %(levelname)-7s %(module)s.%(funcName)s - %(message)s') 
+    format='%(asctime)s %(levelname)-7s %(module)s.%(funcName)s - %(message)s')
 logging.getLogger().setLevel(logging.DEBUG if DEBUG and not TESTING else logging.INFO)
 # logging.getLogger().setLevel(logging.DEBUG if DEBUG else logging.INFO)
 logging.disable(logging.NOTSET)
@@ -17,16 +17,19 @@ logging.info('Loading %s, app version = %s', __name__, os.getenv('CURRENT_VERSIO
 
 # ---
 # fix import paths for internal imports
-cmd_folder = os.path.dirname(__file__)
-if cmd_folder not in sys.path:
-    sys.path.insert(0, cmd_folder)
+APP_ROOT = os.path.dirname(__file__)
+if APP_ROOT not in sys.path:
+    sys.path.insert(0, APP_ROOT)
 
 
 from components import MyJsonEncoder
 
 
 class MyConfig(object):
-    RESTFUL_JSON = {'cls': MyJsonEncoder}
+    RESTFUL_JSON = {
+      'cls': MyJsonEncoder,
+      'indent': 0 if PRODUCTION else 2
+    }
 
     @staticmethod
     def init_app(app):
@@ -64,7 +67,7 @@ import items
 import tags
 import categories
 import estateplan
-import smartimport 
+import smartimport
 
 settings.init(app, api, models)
 items.init(app, api, models)

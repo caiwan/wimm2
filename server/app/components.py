@@ -4,7 +4,7 @@ import sys
 
 import json
 
-from datetime import date, datetime, time 
+from datetime import date, datetime, time
 
 import peewee
 from playhouse.shortcuts import *
@@ -13,11 +13,13 @@ from playhouse.pool import *
 from flask_restful import Resource
 
 
-# -- Service
+# Service
 
 
 class Service:
+    _name = ""
     _model_class = None
+    _settings = {}
 
     def fetch_all_items(self):
         assert self._model_class
@@ -38,13 +40,13 @@ class Service:
 
     def update_item(self, item_id, item_json):
         assert self._model_class
-        my_item = self._model_class.select().where(self._model_class.id == item_id,          
+        my_item = self._model_class.select().where(self._model_class.id == item_id,
             self._model_class.is_deleted == False).get()
         if my_item:
             item = dict_to_model(self._model_class, item_json)
             item.id = my_item.id
             item.changed()
-            item.save()     
+            item.save()
             return item
         raise self._model_class.DoesNotExist()
 
@@ -62,9 +64,9 @@ class Service:
     def serialize_item(self, item):
         try:
             item_json = model_to_dict(item, exclude=['is_deleted'])
-            del item_json['is_deleted'] # Exclude does nothing :( 
+            del item_json['is_deleted'] # Exclude does nothing :(
             return item_json
-        except: 
+        except:
             logger.exception(str(item))
             raise
 
@@ -174,7 +176,7 @@ class MyJsonEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 
-# --- Database
+# Database
 
 DB = Proxy()
 
@@ -226,3 +228,24 @@ def database_connect():
 
 def create_tables(app, models):
     DB.create_tables(models, safe=True)
+
+
+# Module
+
+class Module:
+    _services = []
+    _models = []
+    _controls = []
+    _is_initialized = False
+
+    def register(self, app, api, models, settings):
+        if not self._is_initialized:
+            for service in self._services:
+                pass
+            for control in self._controls:
+                pass
+            for model in self._models:
+                pass
+            self._is_initialized = True
+            pass
+        pass

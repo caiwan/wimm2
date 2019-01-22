@@ -1,6 +1,5 @@
 import logging
 
-from csv import DictReader
 import io
 
 from flask_restful import request
@@ -21,12 +20,12 @@ class ItemListController(components.Controller):
         query_to = request.args.get('to')
 
         result = []
-        status = 503 
+        status = 503
         if query_year and query_month:
             (result, status) = self._fetch_all(fetch_month=(int(query_year), int(query_month)))
         elif query_from and query_to:
             (result, status) = self._fetch_all(fetch_range=(query_from, query_to))
-        else: 
+        else:
             (result, status) = self._fetch_all()
 
         if status == 200:
@@ -53,18 +52,15 @@ class ItemController(components.Controller):
 
     def get(self, item_id):
         (result, status) = self._read(item_id)
-        # return (self._service._group_by_date([result]), status)
         return (result, status)
 
     def put(self, item_id):
         (result, status) = self._update(item_id, request.json)
-        # return (self._service._group_by_date([result]), status)
         return (result, status)
 
 
     def patch(self, item_id):
         (result, status) = self._update(item_id, request.json)
-        # return (self._service._group_by_date([result]), status)
         return (result, status)
 
     def delete(self, item_id):
@@ -77,14 +73,14 @@ class ItemImportController(components.Controller):
     def post(self):
         if 'file' not in request.files:
             return ({'error':'No uploaded file'}, 400)
-        try: 
+        try:
             uploaded_file = request.files['file']
             text = uploaded_file.read().decode(encoding='UTF-8',errors='strict')
-            reader = DictReader(io.StringIO(text), delimiter=',')
-            (imported, items) = self._service.bulk_create_items(reader)
+            (imported, items) = self._service.csv_import_items(text)
             items = [self._service.serialize_item(item) for item in items]
             return ({'imported':imported, 'items':items}, 200)
         except Exception as e :
+            logging.exception(e)
             return ({'error':str(e)}, 400)
 
 

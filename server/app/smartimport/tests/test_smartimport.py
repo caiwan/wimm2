@@ -2,7 +2,7 @@
 
 from datetime import datetime
 import csv, json
-import io, os 
+import io, os
 from unittest import TestCase
 
 import ddt
@@ -16,6 +16,7 @@ from categories import categoryService
 
 API_ROOT = components.BASE_PATH
 FILE_ROOT = os.path.dirname(__file__)
+APP_ROOT = app.APP_ROOT
 
 @ddt.ddt
 class SmartImportTest(TestCase):
@@ -46,15 +47,15 @@ class SmartImportTest(TestCase):
         {'upload_type' : 1, 'source_filename' : 'otp.csv'}
     )
     def test_import_csv(self, upload_type, source_filename):
-        # given 
+        # given
         with open(os.path.join(FILE_ROOT, 'assets', source_filename), encoding="utf-8") as f:
             text = f.read()
             csv_file = io.BytesIO(text.encode("utf-8"))
             csv_data = csv.DictReader(io.StringIO(text), delimiter=',')
 
             # when
-            response = self.app.post(API_ROOT + '/smartimport/upload/', 
-                data = {'file': (csv_file, 'Untitled.csv'), 'type' : upload_type}, 
+            response = self.app.post(API_ROOT + '/smartimport/upload/',
+                data = {'file': (csv_file, 'Untitled.csv'), 'type' : upload_type},
                 **self.upload_args
             )
             self.assertEqual(200, response.status_code, msg=response.data)
@@ -75,7 +76,7 @@ class SmartImportTest(TestCase):
         {'upload_type' : 1, 'source_filename' : 'otp.csv'}
     )
     def test_resume_editing(self, upload_type, source_filename):
-        # given 
+        # given
         with open(os.path.join(FILE_ROOT, 'assets', source_filename), encoding="utf-8") as f:
             text = f.read()
             csv_file = io.BytesIO(text.encode("utf-8"))
@@ -103,7 +104,7 @@ class SmartImportTest(TestCase):
         {'upload_type' : 1, 'source_filename' : 'otp.csv', 'save_filename' : 'otp_save.csv'}
     )
     def test_save_item(self, upload_type, source_filename, save_filename):
-        # given 
+        # given
         imported_item_ids = []
         with open(os.path.join(FILE_ROOT, 'assets', source_filename), encoding="utf-8") as f:
             text = f.read()
@@ -111,10 +112,10 @@ class SmartImportTest(TestCase):
             csv_data = csv.DictReader(io.StringIO(text), delimiter=',')
 
             response_json = self._upload_items(upload_type, csv_file)
-            imported_item_ids = [json['id'] for json in response_json['items']] 
+            imported_item_ids = [json['id'] for json in response_json['items']]
             self.assertEqual(len(imported_item_ids), response_json['imported'])
 
-        # when 
+        # when
         with open(os.path.join(FILE_ROOT, 'assets', save_filename), encoding="utf-8") as f:
             text = f.read()
             csv_data = csv.DictReader(io.StringIO(text), delimiter=',')
@@ -124,14 +125,14 @@ class SmartImportTest(TestCase):
                 item_json = item_pair[1]
                 item_json['category'] = self._findCategory(item_json['category'])
                 item_json['tags'] = item_json['tags'].split(',')
-                response = self.app.post(API_ROOT + '/smartimport/'+str(id)+'/', data = json.dumps(item_json), **self.args) 
+                response = self.app.post(API_ROOT + '/smartimport/'+str(id)+'/', data = json.dumps(item_json), **self.args)
                 self.assertEqual(200, response.status_code, msg=response.data)
 
                 response_json = json.loads(response.data)
 
                 self.assertTrue('stored_item' in response_json)
                 self.assertNotEqual(None, response_json['stored_item'])
-                # TODO: check data 
+                # TODO: check data
 
                 pass
 
@@ -150,8 +151,8 @@ class SmartImportTest(TestCase):
             self.assertTrue('suggested_category' in item)
 
     def _upload_items(self, upload_type, csv_file):
-        response = self.app.post(API_ROOT + '/smartimport/upload/', 
-            data = {'file': (csv_file, 'Untitled.csv'), 'type' : upload_type}, 
+        response = self.app.post(API_ROOT + '/smartimport/upload/',
+            data = {'file': (csv_file, 'Untitled.csv'), 'type' : upload_type},
             **self.upload_args
         )
         self.assertEqual(200, response.status_code, msg=response.data)
@@ -167,10 +168,10 @@ class SmartImportTest(TestCase):
         return response_json
 
     def _insert_categories(self,json_filename):
-        with open(os.path.join(FILE_ROOT, 'assets', json_filename), encoding="utf-8") as f:
+        with open(os.path.join(APP_ROOT, 'tests', 'assets', json_filename), encoding="utf-8") as f:
             json_data = json.loads(f.read())
             categoryService.bulk_create_items(json_data)
 
     def _findCategory(self, category_name):
-        categories = categoryService.find_by_title(category_name.lower())
-        return {"id": categories[0].id} if categories else None
+        category = categoryService.find_by_title(category_name.lower())
+        return {"id": category.id} if category else None

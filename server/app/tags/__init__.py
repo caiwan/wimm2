@@ -4,7 +4,7 @@ import logging
 
 import fuzzy
 import Levenshtein
-from slugify import slugify 
+from slugify import slugify
 
 import components
 from tags.model import Tag, FuzzyTag
@@ -19,13 +19,14 @@ class TagService(components.Service):
 
     def serialize_item(self, item):
         return str(item.tag)
-    
+
     def search_tags(self, search_query, result_limit):
         result_map = {}
 
         # I admit, it's ineffective in so many ways
         words = [word for word in self._make_fuzzy(search_query.split(" ")) if word]
         fuzzies = []
+        # TODO: Optimize this select
         for word in words :
             fuzzy = FuzzyTag.select().where(FuzzyTag.fuzzy.contains(word[0]), FuzzyTag.type == word[1])
             fuzzies.extend(list(fuzzy))
@@ -43,7 +44,7 @@ class TagService(components.Service):
             ", ".join([ str(k.tag)+"="+str(v) for k, v in result_map.items()]) +
             "}"
         )
-    
+
         if result_limit:
             return  [tag for tag in result_map.keys()][:result_limit]
         return [tag for tag in result_map.keys()]
@@ -81,7 +82,7 @@ class TagService(components.Service):
 
     def _create_tag_from_string(self, tag_str):
         tag = Tag(tag=tag_str)
-        fuzzies = [FuzzyTag(tag=tag, fuzzy=fuzzy_word[0], type=fuzzy_word[1]) for fuzzy_word in self._make_fuzzy(tag_str.split(" ")) if fuzzy_word]
+        fuzzies = [FuzzyTag(tag=tag, fuzzy=fuzzy_word[0], type=fuzzy_word[1]) for fuzzy_word in self._make_fuzzy(tag_str.split(" ")) if fuzzy_word[0]]
         return (tag,fuzzies)
 
     _dmeta = fuzzy.DMetaphone()

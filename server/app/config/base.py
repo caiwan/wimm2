@@ -14,7 +14,7 @@ DATABASE_NAME = "wimm"
 #DATABASE_AUTH = {"user":'wimmapp', "password":'wimmapppassword123456'}
 DATABASE_PATH = "./app.db"
 
-# Application in-dev. settings 
+# Application in-dev. settings
 TESTING = False
 DEBUG = True
 
@@ -23,5 +23,3 @@ LOGIN_DISABLED = True
 # Set secret keys for CSRF protection
 CSRF_SESSION_KEY = '8a7474974efcf76896aa84eea9cbe016bbc08828'
 CSRF_ENABLED = True
-
-JSONIFY_PRETTYPRINT_REGULAR = False

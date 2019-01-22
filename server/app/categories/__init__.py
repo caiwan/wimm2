@@ -22,7 +22,7 @@ class CategoryService(components.Service):
                 id = int(item_json['parent']['id'])
                 parent = self.read_item(id).get()
             del item_json['parent']
-            
+
         item = dict_to_model(Category, item_json)
         item.parent = parent
         item.save()
@@ -40,7 +40,7 @@ class CategoryService(components.Service):
         parent = None
         if 'parent' in item_json and 'id' in item_json['parent'] and item_json['parent']['id']:
             parent = self.read_item(item_json['parent'])
-            
+
         item = dict_to_model(Category, item_json)
         item.parent = parent
         item.save()
@@ -66,16 +66,26 @@ class CategoryService(components.Service):
         pass
 
     def find_by_title(self, title):
+        try :
+            return Category.get(
+                Category.title.contains(title.lower()),
+                Category.is_deleted == False,
+            )
+        except Category.DoesNotExist:
+            return None
+
+
+    def fetch_all_by_title(self, title):
         return Category.select().where(
             Category.title.contains(title),
             Category.is_deleted == False,
-        ).objects()
+        )
 
-    def fetch_subtree_ordered(self, query_item_id):
+    def fetch_subtree_ids(self, query_item_id):
         # http://docs.peewee-orm.com/en/latest/peewee/api.html#SelectQuery
         # http://docs.peewee-orm.com/en/latest/peewee/querying.html#common-table-expressions
 
-        root_query = None 
+        root_query = None
         if query_item_id is None:
             root_query = (Category
                 .select(Category.id, Category.order, Value(0).alias('level'))
@@ -100,11 +110,17 @@ class CategoryService(components.Service):
             .order_by(cte.c.id)
         )
 
-        # Fetch all records
-        result_query = Category.select().where(Category.id << [item.id for item in tree_query])
+        return tree_query
+
+    def fetch_subtree(self, query_item_id):
+        tree_query = self.fetch_subtree_ids(query_item_id)
+        return Category.select().where(Category.id << [item.id for item in tree_query])
+
+    def fetch_subtree_ordered(self, query_item_id):
+        result_query = self.fetch_subtree(query_item_id)
         result_map = dict((item.id, item) for item in result_query)
 
-        # build tree 
+        # build tree
         tree_ids = {}
         root_item_ids = []
         for item in result_query:
@@ -117,7 +133,6 @@ class CategoryService(components.Service):
             else:
                 tree_ids[parent_id].append(item.id)
 
-        # 
         # logging.info('root: {}'.format(' ,'.join(str(o) for o in root_item_ids)))
         # for (k,v) in tree_ids.items():
         #     logging.info('kv: {}:[{}]'.format(str(k),', '.join(str(o) for o in v)))
@@ -142,7 +157,7 @@ class CategoryService(components.Service):
                 item.flatten_order = index
                 item.save()
         pass
-        
+
     def bulk_create_items(self, items_json):
         parent_map = dict()
         item_map = dict()
@@ -155,11 +170,11 @@ class CategoryService(components.Service):
 
                 id = int(item_json['id'])
 
-                parent_id = None 
-                
+                parent_id = None
+
                 if 'parent' in item_json and item_json['parent']:
                     parent_id = int(item_json['parent']['id']) if 'id' in item_json['parent'] else None
-                
+
                 del item_json['id']
                 del item_json['parent']
 
@@ -168,7 +183,7 @@ class CategoryService(components.Service):
                 item = self.create_category(item_json)
                 item_map[id] = item
                 items.append(item)
-                
+
                 # logging.info("Insert item ID: {} item ID {}".format(id, item.id))
 
             for (item_id, parent_id) in parent_map.items():
@@ -186,11 +201,11 @@ class CategoryService(components.Service):
     def serialize_item(self, item):
         try:
             item_json = model_to_dict(item, exclude=['is_deleted', 'flatten_order', 'parent'])
-            del item_json['is_deleted'] # Exclude does nothing :( 
+            del item_json['is_deleted'] # Exclude does nothing :(
             del item_json['flatten_order']
-            item_json['parent'] = {'id':item.parent.id} if item.parent else None 
-            return item_json 
-        except: 
+            item_json['parent'] = {'id':item.parent.id} if item.parent else None
+            return item_json
+        except:
             logging.exception(sys.exc_info()[0])
             raise
 
@@ -199,7 +214,7 @@ class CategoryService(components.Service):
 categoryService = CategoryService()
 
 def init(app, api, models):
-    from categories.controller import CategoryController, CategoryListController 
+    from categories.controller import CategoryController, CategoryListController
     from categories.controller import CategoryImportExportController
     components.register_controllers(api, [CategoryController, CategoryListController, CategoryImportExportController])
     models.extend([Category])
