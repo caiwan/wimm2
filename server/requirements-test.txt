@@ -1,10 +1,1 @@
-Flask>=0.10.1
-flask-restful>=0.3.6
-Flask-Script
-peewee==3.8.0
-Flask-Cors==3.0.3
-Fuzzy
-python-slugify
-python-Levenshtein
-python-dotenv
 ddt

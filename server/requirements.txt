@@ -7,4 +7,3 @@ Fuzzy
 python-slugify
 python-Levenshtein
 python-dotenv
-ddt

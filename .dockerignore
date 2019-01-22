@@ -177,6 +177,7 @@ celerybeat-schedule
 
 # Environments
 .env
+*.env
 .venv
 env/
 venv/
@@ -200,3 +201,7 @@ venv.bak/
 dmypy.json
 
 *.db
+*.db-*
+
+**/test/
+test*.py

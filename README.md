@@ -1,47 +1,79 @@
 # WIMM - Where Is My Money?
 
+WIMM is a yet-another self-hosted single user money and budget tracker.
 There are so many budget trackers it's just easier to code a new one
 than to choose one.
 
 (Edit: probably not)
 
-## Where Is My UI?
-
-This repo contains the backend code only. The reference frontend
-lives here: [https://github.com/slapec/wimm-vue](https://github.com/slapec/wimm-vue)
+**This version is at pre-alpha version at the moment**
 
 ## Setup
 
-1.  Get a Python 3 environment
+### Using Docker
 
-    The project is developed in 3.5.1 but I think it should work with
-    any 3.x version.
-    
-2.  Install dependencies:
+1. Prerequisites
 
-    `pip install -r requirements`
-    
-3.  Create the `wimm/settings.py` file and define the missing names
-    in it (see the list in the example below).
+    Install `docker` and `docker-compose`.
+    See official instructions for
+    [Docker](https://www.docker.com/get-started) and
+    [Compose](https://docs.docker.com/compose/install/).
 
-    It's a good idea to import everything from `wimm/base_settings.py`
-    in your settings file like this:
-    
+2. Create docker image
+
+    - run `docker-compose up` 
+    - or to detach it right away to run in background `docker-compose up -d`
+
+    For further configuration see `docker-compose.yaml` and 
+    `Dockerimage` files in the source root, and other configuration 
+    files in `docker/` folder.
+
+### Manual setup
+
+1. Prerequisites
+
+    To build manually you'll need the following packages installed:
+
+    - **Python 3.7* and **pip 18.1** (optionally within a virtual environment) for backend
+    - **Node 11.7** and **NPM 6.5** for client (frontend)
+    - **uWSGI** via pip for hosting the backend code
+    - **nginx** for delegate it to be accessible via http
+
+1. Build client (frontend)
+
     ```
-    from wimm.base_settings import *
-    
-    DEBUG = False
-    SECRET_KEY = 'some secret'
-    STATIC_ROOT = '/some_folder/'
+    cd client
+    npm i && npm build
+    cd ..
     ```
-    
-    For the full list of available settings [check the Django 
-    documentation](https://docs.djangoproject.com/en/1.9/ref/settings/)
 
-4.  Start the application
-
+2. Install server dependencies
     ```
-    ptython manage.py runserver
+    cd server
+    pip install -r requirements.txt
+    cd ..
+    ```
+
+3. Copy static files from client
+    ```
+    cp client/dist server/static
+    ```
+
+3. Install and Configure Nginx:
+
+    TBD
+
+3. Configure your server with uWSGI
+    ```
+    cp ./docker/uwsgi.ini /server/wusgi.ini
+    ```
+    See Flask's [uWSGI documentation](http://flask.pocoo.org/docs/1.0/deploying/uwsgi/) for further details
+
+4. Run the server with uwsgi:
+    
+    *TODO: This needs to be defined and tested well*
+    ```
+    uwsgi -s /tmp/wimm2.sock --manage-script-name --mount /wimm=server:app
     ```
 
 ## Details
@@ -52,3 +84,27 @@ with some VBA magic could have the exact same features.
 However you can host this app on your server, so you can use
 your Raspberry Pi for more than just seeding Linux distros and
 watching Big Buck Bunny.
+
+## Development stuff
+
+Any contribution ot this project is welcomed, and appreciated, however there isn't any developer guideline set at this moment.
+
+### Running tests
+
+1. Server (backend)
+
+    ```
+    cd server/
+    python tests.py
+    ```
+
+2. Client (frontend)
+    - There's none ATM
+
+### Features
+
+TBD
+
+### Future development
+
+TBD
