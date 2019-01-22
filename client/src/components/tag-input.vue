@@ -120,6 +120,7 @@ export default {
           this.focusInput();
         }
         else {
+          this.choiceListVisible = false;
           this.$emit('blur');
         }
       }
@@ -299,6 +300,9 @@ export default {
       this.resolveChoices();
       this.resolveRequired = false;
     }
+  },
+  watch() {
+
   }
 }
 </script>

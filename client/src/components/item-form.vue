@@ -127,8 +127,8 @@ export default {
         }
       });
     },
-    focusTags: () => this.$refs.tags.focus(),
-    focusPrice: () => this.$refs.price.focus(),
+    focusTags() { this.$refs.tags.focus() },
+    focusPrice() { this.$refs.price.focus() },
   },
   watch: {
     date(nextValue) {
