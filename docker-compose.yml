@@ -2,5 +2,5 @@ version: '3'
 services:
   app:
     build: ./
-    ports: 
-      - 8181:80
+    ports:
+      - 8001:8001

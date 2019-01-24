@@ -6,11 +6,11 @@ WORKDIR /client
 RUN npm install && \
   npm run build
 
-# Application 
+# Application
 FROM tiangolo/uwsgi-nginx:python3.6-alpine3.7
 
 ENV NGINX_MAX_UPLOAD 0
-ENV LISTEN_PORT 80
+ENV LISTEN_PORT 8001
 ENV UWSGI_INI /app/uwsgi.ini
 ENV STATIC_URL /
 ENV STATIC_PATH /app/static
@@ -23,7 +23,7 @@ COPY ./docker/wait-for-it.sh /app/
 COPY ./docker/entrypoint.sh /app/
 COPY ./docker/uwsgi.ini /app/
 
-# --- Install py deps 
+# --- Install py deps
 USER root
 RUN apk update \
   && apk add bash \
@@ -70,4 +70,4 @@ RUN chmod +x /app/entrypoint.sh \
   /app/start.sh \
   /app/prestart.sh
 
-ENTRYPOINT ["/app/entrypoint.sh"]
+ENTRYPOINT ["sh", "/app/entrypoint.sh", "/app/start.sh"]
