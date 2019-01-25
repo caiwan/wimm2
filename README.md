@@ -21,11 +21,11 @@ than to choose one.
 
 2. Create docker image
 
-    - run `docker-compose up` 
+    - run `docker-compose up`
     - or to detach it right away to run in background `docker-compose up -d`
 
-    For further configuration see `docker-compose.yaml` and 
-    `Dockerimage` files in the source root, and other configuration 
+    For further configuration see `docker-compose.yaml` and
+    `Dockerimage` files in the source root, and other configuration
     files in `docker/` folder.
 
 ### Manual setup
@@ -70,7 +70,7 @@ than to choose one.
     See Flask's [uWSGI documentation](http://flask.pocoo.org/docs/1.0/deploying/uwsgi/) for further details
 
 4. Run the server with uwsgi:
-    
+
     *TODO: This needs to be defined and tested well*
     ```
     uwsgi -s /tmp/wimm2.sock --manage-script-name --mount /wimm=server:app
@@ -87,7 +87,10 @@ watching Big Buck Bunny.
 
 ## Development stuff
 
-Any contribution ot this project is welcomed, and appreciated, however there isn't any developer guideline set at this moment.
+Any contribution ot this project is welcomed, and appreciated, however
+there isn't any developer guideline set at this moment.
+
+- For python static code analysis an style check we use `flake8`, however it's not fully configured.
 
 ### Running tests
 

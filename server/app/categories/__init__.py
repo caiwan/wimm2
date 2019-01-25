@@ -1,6 +1,8 @@
 # coding=utf-8
 import sys
 
+import peewee
+
 from playhouse.shortcuts import dict_to_model, model_to_dict
 from playhouse.shortcuts import Value
 
@@ -32,7 +34,7 @@ class CategoryService(components.Service):
     def create_item(self, item_json):
         # when bulk-inserting multiple items please use create_item
         # then call _flatten_tree_order() when database structure is ready
-        # to avoid unnesesarry load
+        # to avoid unnecessary load
         item = self.create_category(item_json)
         self._flatten_tree_order()
         return item

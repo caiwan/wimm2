@@ -1,11 +1,9 @@
 import logging
 
-import io
-
 from flask_restful import request
 
-import components
-from items import itemService, ItemReportService
+from app import components
+from app.items import itemService, ItemReportService
 
 
 class ItemListController(components.Controller):
@@ -13,11 +11,11 @@ class ItemListController(components.Controller):
     _service = itemService
 
     def get(self):
-        query_year = request.args.get('year')
-        query_month = request.args.get('month')
+        query_year = request.args.get("year")
+        query_month = request.args.get("month")
 
-        query_from = request.args.get('from')
-        query_to = request.args.get('to')
+        query_from = request.args.get("from")
+        query_to = request.args.get("to")
 
         result = []
         status = 503
@@ -40,10 +38,9 @@ class ItemListController(components.Controller):
         return (result, status)
 
     def delete(self):
-        for id in request.json['items']:
+        for id in request.json["items"]:
             self._delete(int(id))
-        return ('', 200)
-
+        return ("", 200)
 
 
 class ItemController(components.Controller):
@@ -58,7 +55,6 @@ class ItemController(components.Controller):
         (result, status) = self._update(item_id, request.json)
         return (result, status)
 
-
     def patch(self, item_id):
         (result, status) = self._update(item_id, request.json)
         return (result, status)
@@ -66,22 +62,23 @@ class ItemController(components.Controller):
     def delete(self, item_id):
         return self._delete(item_id)
 
+
 class ItemImportController(components.Controller):
     path = "/items/upload/"
     _service = itemService
 
     def post(self):
-        if 'file' not in request.files:
-            return ({'error':'No uploaded file'}, 400)
+        if "file" not in request.files:
+            return ({"error": "No uploaded file"}, 400)
         try:
-            uploaded_file = request.files['file']
-            text = uploaded_file.read().decode(encoding='UTF-8',errors='strict')
+            uploaded_file = request.files["file"]
+            text = uploaded_file.read().decode(encoding="UTF-8", errors="strict")
             (imported, items) = self._service.csv_import_items(text)
             items = [self._service.serialize_item(item) for item in items]
-            return ({'imported':imported, 'items':items}, 200)
-        except Exception as e :
+            return ({"imported": imported, "items": items}, 200)
+        except Exception as e:
             logging.exception(e)
-            return ({'error':str(e)}, 400)
+            return ({"error": str(e)}, 400)
 
 
 class TagSumController(components.Controller):

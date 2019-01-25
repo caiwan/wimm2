@@ -10,7 +10,7 @@ class BudgetListController(components.Controller):
 
     def get(self):
         return self._fetch_all()
-    
+
     def post(self):
         return self._create(request.json)
 
@@ -35,7 +35,7 @@ class AssetListController(components.Controller):
 
     def get(self):
         return self._fetch_all()
-    
+
     def post(self):
         return self._create(request.json)
 

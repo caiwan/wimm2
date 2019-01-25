@@ -96,7 +96,7 @@ class CategoryCRUDTest(TestCase):
         # - check parent-child relationship
         # Children?
         response = self.app.get(
-            API_BASE+"/categories/"+str(root_id)+"/", **self.post_args)
+            API_BASE + "/categories/" + str(root_id) + "/", **self.post_args)
         self.assertEquals(200, response.status_code)
         root_category_json = json.loads(response.data)
 
@@ -106,7 +106,7 @@ class CategoryCRUDTest(TestCase):
 
     def _insert_category(self, payload):
         response = self.app.post(
-            API_BASE+"/categories/", data=json.dumps(payload), **self.post_args)
+            API_BASE + "/categories/", data=json.dumps(payload), **self.post_args)
         self.assertEquals(201, response.status_code)
         category_json = json.loads(response.data)
         self.assertIsNotNone(category_json["id"])

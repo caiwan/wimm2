@@ -8,10 +8,8 @@ class AppSettingsController(components.Controller):
 
     def get(self):
         return ({
-            'root': '',
-            'csrftoken': 'i_swear_i_ill_set_up_my_csrf_tokens_at_some_point',
-            'smartimport': {},
-            'estateplan': {},
+            "root": "",
+            "csrftoken": "i_swear_i_ill_set_up_my_csrf_tokens_at_some_point",
         }, 200)
 
 

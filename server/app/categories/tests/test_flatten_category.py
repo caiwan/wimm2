@@ -14,7 +14,6 @@ import app
 import components
 
 from categories import categoryService
-from categories import model as categoryModel
 
 
 API_BASE = components.BASE_PATH

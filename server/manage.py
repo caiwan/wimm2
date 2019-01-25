@@ -1,46 +1,46 @@
 # coding=utf-8
-import logging
+from flask_script import Server, Manager, Command
+from dotenv import load_dotenv, find_dotenv
 import os
 import sys
+
+import app
 
 # fix import paths for internal imports
 cmd_folder = os.path.dirname(__file__)
 if cmd_folder not in sys.path:
     sys.path.insert(0, cmd_folder)
 
-from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 
-from flask_script import Server, Manager, Command, Option
+manager = Manager(app.APP)
 
-import app
-manager = Manager(app.app)
 
 class CreateDb(Command):
     def run(self):
-        import app
         from app import components
-        components.create_tables(app.app, app.models) 
+        components.create_tables(app.APP, app.MODELS)
+
 
 class Runserver(Server):
     def run(self):
-        # import app
-        logging.info('fasz')
-        self.__call__(app.app,
-            self.port,
-            self.host, 
-            self.use_debugger,
-            self.use_reloader,
-            self.threaded,
-            self.process,
-            self.passthrough_errors,
-            (self.ssl_crt, self.ssl_key)
-        )
+        self.__call__(app.APP,
+                      self.port,
+                      self.host,
+                      self.use_debugger,
+                      self.use_reloader,
+                      self.threaded,
+                      self.process,
+                      self.passthrough_errors,
+                      (self.ssl_crt, self.ssl_key)
+                      )
+
 
 class RunTests(Command):
     def run(self):
         import unittest
         unittest.main()
+
 
 # override the default 127.0.0.1 binding ddress
 manager.add_command("runserver", Server(host="0.0.0.0", port=8000))

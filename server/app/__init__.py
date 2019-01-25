@@ -61,20 +61,20 @@ class MyConfig(object):
 APP = Flask(__name__)
 APP.config.from_object(MyConfig)
 MyConfig.init_app(APP)
-api = Api(APP)
+API = Api(APP)
 CORS(APP)
 
 # --- Initialize Application
 
-models = []
+MODELS = []
 
-app.settings.init(APP, api, models)
-app.items.init(APP, api, models)
-app.tags.init(APP, api, models)
-app.categories.init(APP, api, models)
-app.estateplan.init(APP, api, models)
-app.smartimport.init(APP, api, models)
+app.settings.init(APP, API, MODELS)
+app.items.init(APP, API, MODELS)
+app.tags.init(APP, API, MODELS)
+app.categories.init(APP, API, MODELS)
+app.estateplan.init(APP, API, MODELS)
+app.smartimport.init(APP, API, MODELS)
 
 if not TESTING:
-    app.components.database_init(APP, models)
+    app.components.database_init(APP, MODELS)
     app.components.database_connect()

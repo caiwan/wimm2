@@ -21,7 +21,7 @@ class Service:
 
     def fetch_all_items(self):
         assert self._model_class
-        return self._model_class.get(self._model_class.is_deleted == False)
+        return self._model_class.select().where(self._model_class.is_deleted == False).objects()
 
     def read_item(self, item_id):
         assert self._model_class
@@ -61,8 +61,8 @@ class Service:
 
     def serialize_item(self, item):
         try:
-            item_json = model_to_dict(item, exclude=['is_deleted'])
-            del item_json['is_deleted']  # Exclude does nothing :(
+            item_json = model_to_dict(item, exclude=["is_deleted"])
+            del item_json["is_deleted"]  # Exclude does nothing :(
             return item_json
         except:
             logging.exception(str(item))
@@ -70,9 +70,6 @@ class Service:
 
 
 # -- Controller
-
-
-
 class Controller(Resource):
     """ Base controller Class
     """
@@ -80,19 +77,19 @@ class Controller(Resource):
     _service = None
 
     def get(self):
-        return({"error": ['Not implemented']}, 501)
+        return({"error": ["Not implemented"]}, 501)
 
     def post(self):
-        return({"error": ['Not implemented']}, 501)
+        return({"error": ["Not implemented"]}, 501)
 
     def put(self):
-        return({"error": ['Invalid method call or not implemented']}, 405)
+        return({"error": ["Invalid method call or not implemented"]}, 405)
 
     def delete(self):
-        return({"error": ['Invalid method call or not implemented']}, 405)
+        return({"error": ["Invalid method call or not implemented"]}, 405)
 
     def patch(self):
-        return({"error": ['Invalid method call or not implemented']}, 405)
+        return({"error": ["Invalid method call or not implemented"]}, 405)
 
     def _get_cls(self):
         assert self._service
@@ -109,18 +106,18 @@ class Controller(Resource):
         except RuntimeError as e:
             msg = "Bad request: " + str(e)
             logging.exception(msg)
-            return({'error': [msg]}, 400)
+            return({"error": [msg]}, 400)
 
     def _create(self, item_json, *args, **kwargs):
         assert self._service
-        if '_id' in item_json:
-            del item_json['_id']
+        if "_id" in item_json:
+            del item_json["_id"]
         try:
             return (self._service.serialize_item(self._service.create_item(item_json, *args, **kwargs)), 201)
         except RuntimeError as e:
             msg = "Bad request: " + str(e)
             logging.exception(msg)
-            return({'error': [msg]}, 400)
+            return({"error": [msg]}, 400)
 
     def _read(self, item_id, *args, **kwargs):
         _cls = self._get_cls()
@@ -132,21 +129,21 @@ class Controller(Resource):
         except RuntimeError as e:
             msg = "Bad request: " + str(e)
             logging.exception(msg)
-            return({'error': [msg]}, 400)
+            return({"error": [msg]}, 400)
 
     def _update(self, item_id, item_json, *args, **kwargs):
         _cls = self._get_cls()
-        if '_id' in item_json:
-            del item_json['_id']
+        if "_id" in item_json:
+            del item_json["_id"]
         try:
             return (self._service.serialize_item(self._service.update_item(item_id, item_json, *args, **kwargs)), 200)
         except _cls.DoesNotExist as e:
-            # logging.exception(' :'.join(item_id, item_json))
+            # logging.exception(" :".join(item_id, item_json))
             return({"error": str(e)}, 404)
         except RuntimeError as e:
             msg = "Bad request: " + str(e)
             logging.exception(msg)
-            return({'error': [msg]}, 400)
+            return({"error": [msg]}, 400)
 
     def _delete(self, item_id, *args, **kwargs):
         _cls = self._get_cls()
@@ -157,9 +154,9 @@ class Controller(Resource):
         except RuntimeError as e:
             msg = "Bad request: " + str(e)
             logging.exception(msg)
-            return({'error': [msg]}, 400)
+            return({"error": [msg]}, 400)
 
-        return ('', 200)
+        return ("", 200)
 
 
 #
@@ -170,9 +167,9 @@ class MyJsonEncoder(json.JSONEncoder):
         # if isinstance(obj, mongoengine.fields.ObjectId):
             # return str(obj)
         if isinstance(obj, date):
-            return int(obj.strftime('%s'))
+            return int(obj.strftime("%s"))
         if isinstance(obj, datetime):
-            return int(obj.strftime('%s'))
+            return int(obj.strftime("%s"))
         return json.JSONEncoder.default(self, obj)
 
 
@@ -181,9 +178,8 @@ class MyJsonEncoder(json.JSONEncoder):
 DB = Proxy()
 
 
-class BaseModel(peewee.
-Model):
-    """ Peewee's Base model
+class BaseModel(peewee.Model):
+    """ Peewee"s Base model
     """
     class Meta:
         database = DB
@@ -220,7 +216,7 @@ def database_init(app, models):
     elif app.config["DATABASE"] == "sqlite":
         from playhouse.pool import PooledSqliteDatabase
         database = PooledSqliteDatabase(app.config["DATABASE_PATH"], pragmas=(
-            ('journal_mode', 'wal'), ('cache_size', -1024 * 64)))
+            ("journal_mode", "wal"), ("cache_size", -1024 * 64)))
 
     else:
         raise RuntimeError("No database set or invalid")
