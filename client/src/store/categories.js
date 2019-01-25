@@ -1,5 +1,4 @@
 import io from '@/services/io';
-import { relativeTimeRounding } from 'moment';
 
 export default {
   namespaced: true,
@@ -16,13 +15,12 @@ export default {
   },
 
   mutations: {
-    clear: (state) => { state.items = [], state.itemMap = [], state.itemTree = [] },
+    clear: (state) => { state.items = []; state.itemMap = []; state.itemTree = []; },
     put: (state, item) => {
-      if (!item.hasOwnProperty('children'))
-        item['children'] = []
+      if (!item.hasOwnProperty('children')) { item['children'] = []; }
       state.itemMap[item.id] = item;
       if (item.parent) {
-        const pid = item.parent.id
+        const pid = item.parent.id;
         state.itemMap[pid].children.push(state.itemMap[item.id]);
       } else {
         state.itemTree.push(state.itemMap[item.id]);
@@ -42,21 +40,20 @@ export default {
     },
 
     rm: (state, item) => {
-      state.items.splice(state.items.indexOf(item), 1)
-      state.itemTree.splice(state.itemTree.indexOf(item), 1)
-    },
+      state.items.splice(state.items.indexOf(item), 1);
+      state.itemTree.splice(state.itemTree.indexOf(item), 1);
+    }
 
   },
 
   actions: {
-    async reload({ dispatch, state }) {
+    async reload ({ dispatch, state }) {
       state.isLoaded = false;
       await dispatch('fetchAll');
     },
-    async fetchAll({ commit, state }) {
+    async fetchAll ({ commit, state }) {
       // TODO: This shit will fetch all the things over 9000 times
-      if (state.isLoading || state.isLoaded)
-        return;
+      if (state.isLoading || state.isLoaded) { return; }
       state.isLoading = true;
       const categories = await io.categories.fetchAll();
       commit('clear');
@@ -67,7 +64,7 @@ export default {
       state.isLoaded = true;
     },
 
-    async addNew({ commit, state }, { parent, value }) {
+    async addNew ({ commit, state }, { parent, value }) {
       value = value && value.trim();
       if (!value) {
         return;
@@ -80,7 +77,7 @@ export default {
       commit('put', item);
     },
 
-    async edit({ commit, state }, item) {
+    async edit ({ commit, state }, item) {
       item.title = item.title.trim();
       if (!item.title) {
         await io.categories.remove(item);
@@ -91,9 +88,9 @@ export default {
       }
     },
 
-    async remove({ commit, state }, category) {
-      await io.categories.remove(item)
-      commit('rm', item);
+    async remove ({ commit, state }, category) {
+      await io.categories.remove(category);
+      commit('rm', category);
     }
   }
-}
+};
