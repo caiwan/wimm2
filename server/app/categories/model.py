@@ -1,9 +1,11 @@
 import peewee
-import components
+
+from app import components
+
 
 class Category(components.BaseDocumentModel):
-    title = peewee.TextField()
-    comment = peewee.TextField(default = '')
+    name = peewee.TextField()
+    comment = peewee.TextField(default = "")
     order = peewee.IntegerField(default=0)
     flatten_order = peewee.IntegerField(default=0)
-    parent = peewee.ForeignKeyField('self', backref='children', null=True)
+    parent = peewee.ForeignKeyField("self", backref="children", null=True)

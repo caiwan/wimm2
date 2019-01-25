@@ -54,6 +54,7 @@ RUN apk update \
     zlib-dev \
     python3-dev \
     cython \
+  && pip install --upgrade pip \
   && pip install --upgrade cython \
   && pip install uwsgi \
   && pip install -r requirements.txt \
@@ -70,4 +71,5 @@ RUN chmod +x /app/entrypoint.sh \
   /app/start.sh \
   /app/prestart.sh
 
-ENTRYPOINT ["sh", "/app/entrypoint.sh", "/app/start.sh"]
+ENTRYPOINT ["sh", "/app/entrypoint.sh"]
+CMD ["/app/start.sh]

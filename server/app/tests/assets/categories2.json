@@ -1,67 +1,67 @@
 [
     {
         "id": 1,
-        "title": "Income",
+        "name": "Income",
         "parent": null,
         "order": 1
     },
     {
         "id": 2,
-        "title": "Expense",
+        "name": "Expense",
         "parent": null,
         "order": 2
     },
     {
         "id": 3,
-        "title": "Debt & Loan",
+        "name": "Debt & Loan",
         "parent": null,
         "order": 3
     },
     {
         "id": 4,
-        "title": "Salary",
+        "name": "Salary",
         "parent": {
             "id": 1
         }
     },
     {
         "id": 5,
-        "title": "Selling",
+        "name": "Selling",
         "parent": {
             "id": 1
         }
     },
     {
         "id": 6,
-        "title": "Gift",
+        "name": "Gift",
         "parent": {
             "id": 1
         }
     },
     {
         "id": 7,
-        "title": "Others",
+        "name": "Others",
         "parent": {
             "id": 1
         }
     },
     {
         "id": 8,
-        "title": "Bills & utilities",
+        "name": "Bills & utilities",
         "parent": {
             "id": 2
         }
     },
     {
         "id": 9,
-        "title": "Business",
+        "name": "Business",
         "parent": {
             "id": 2
         }
     },
     {
         "id": 10,
-        "title": "Education",
+        "name": "Education",
         "parent": {
             "id": 2
         },
@@ -69,7 +69,7 @@
     },
     {
         "id": 11,
-        "title": "Entertainment",
+        "name": "Entertainment",
         "parent": {
             "id": 2
         },
@@ -77,266 +77,266 @@
     },
     {
         "id": 12,
-        "title": "Family",
+        "name": "Family",
         "parent": {
             "id": 2
         }
     },
     {
         "id": 13,
-        "title": "Fees & charges",
+        "name": "Fees & charges",
         "parent": {
             "id": 2
         }
     },
     {
         "id": 14,
-        "title": "Food and Beverage",
+        "name": "Food and Beverage",
         "parent": {
             "id": 2
         }
     },
     {
         "id": 15,
-        "title": "Friends & Lover",
+        "name": "Friends & Lover",
         "parent": {
             "id": 2
         }
     },
     {
         "id": 16,
-        "title": "Gift & donations",
+        "name": "Gift & donations",
         "parent": {
             "id": 2
         }
     },
     {
         "id": 17,
-        "title": "Health & Fitness",
+        "name": "Health & Fitness",
         "parent": {
             "id": 2
         }
     },
     {
         "id": 18,
-        "title": "Insurance",
+        "name": "Insurance",
         "parent": {
             "id": 2
         }
     },
     {
         "id": 19,
-        "title": "Investment",
+        "name": "Investment",
         "parent": {
             "id": 2
         }
     },
     {
         "id": 20,
-        "title": "Shopping",
+        "name": "Shopping",
         "parent": {
             "id": 2
         }
     },
     {
         "id": 21,
-        "title": "Transport & Travel",
+        "name": "Transport & Travel",
         "parent": {
             "id": 2
         }
     },
     {
         "id": 22,
-        "title": "Withdrawal",
+        "name": "Withdrawal",
         "parent": {
             "id": 2
         }
     },
     {
         "id": 23,
-        "title": "Other",
+        "name": "Other",
         "parent": {
             "id": 2
         }
     },
     {
         "id": 24,
-        "title": "Debt",
+        "name": "Debt",
         "parent": {
             "id": 3
         }
     },
     {
         "id": 25,
-        "title": "Debt Collection",
+        "name": "Debt Collection",
         "parent": {
             "id": 3
         }
     },
     {
         "id": 26,
-        "title": "Loan",
+        "name": "Loan",
         "parent": {
             "id": 3
         }
     },
     {
         "id": 27,
-        "title": "Repayment",
+        "name": "Repayment",
         "parent": {
             "id": 3
         }
     },
     {
         "id": 28,
-        "title": "Electricity",
+        "name": "Electricity",
         "parent": {
             "id": 8
         }
     },
     {
         "id": 29,
-        "title": "Cas",
+        "name": "Cas",
         "parent": {
             "id": 8
         }
     },
     {
         "id": 30,
-        "title": "Internet",
+        "name": "Internet",
         "parent": {
             "id": 8
         }
     },
     {
         "id": 31,
-        "title": "Phone",
+        "name": "Phone",
         "parent": {
             "id": 8
         }
     },
     {
         "id": 32,
-        "title": "Rentals",
+        "name": "Rentals",
         "parent": {
             "id": 8
         }
     },
     {
         "id": 33,
-        "title": "Television",
+        "name": "Television",
         "parent": {
             "id": 8
         }
     },
     {
         "id": 34,
-        "title": "Water",
+        "name": "Water",
         "parent": {
             "id": 8
         }
     },
     {
         "id": 35,
-        "title": "Books",
+        "name": "Books",
         "parent": {
             "id": 10
         }
     },
     {
         "id": 36,
-        "title": "Games",
+        "name": "Games",
         "parent": {
             "id": 11
         }
     },
     {
         "id": 37,
-        "title": "Movies",
+        "name": "Movies",
         "parent": {
             "id": 11
         }
     },
     {
         "id": 38,
-        "title": "Cafe",
+        "name": "Cafe",
         "parent": {
             "id": 14
         }
     },
     {
         "id": 39,
-        "title": "Restaurant",
+        "name": "Restaurant",
         "parent": {
             "id": 14
         }
     },
     {
         "id": 40,
-        "title": "Charity",
+        "name": "Charity",
         "parent": {
             "id": 16
         }
     },
     {
         "id": 41,
-        "title": "Marriage & Funeral",
+        "name": "Marriage & Funeral",
         "parent": {
             "id": 16
         }
     },
     {
         "id": 42,
-        "title": "Doctor",
+        "name": "Doctor",
         "parent": {
             "id": 17
         }
     },
     {
         "id": 43,
-        "title": "Personal care",
+        "name": "Personal care",
         "parent": {
             "id": 17
         }
     },
     {
         "id": 44,
-        "title": "Pharmacy",
+        "name": "Pharmacy",
         "parent": {
             "id": 17
         }
     },
     {
         "id": 45,
-        "title": "Sports",
+        "name": "Sports",
         "parent": {
             "id": 17
         }
     },
     {
         "id": 46,
-        "title": "Accessories",
+        "name": "Accessories",
         "parent": {
             "id": 20
         }
     },
     {
         "id": 47,
-        "title": "Clothing",
+        "name": "Clothing",
         "parent": {
             "id": 20
         }
     },
     {
         "id": 48,
-        "title": "Electronics",
+        "name": "Electronics",
         "parent": {
             "id": 20
         }
     },
     {
         "id": 49,
-        "title": "Taxi",
+        "name": "Taxi",
         "parent": {
             "id": 21
         }

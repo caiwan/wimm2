@@ -1,5 +1,28 @@
 <template>
   <div>
+
+    <h2>The stuff</h2>
+
+    <div class="treeSelf">
+      <vue-drag-tree
+        :data="categories"
+        :allowDrag="allowDrag"
+        :allowDrop="allowDrop"
+        :defaultText="'New Category'"
+        @current-clicked="curNodeClicked"
+        @drag="dragHandler"
+        @drag-enter="dragEnterHandler"
+        @drag-leave="dragLeaveHandler"
+        @drag-over="dragOverHandler"
+        @drag-end="dragEndHandler"
+        @drop="dropHandler"
+        :disableDBClick="false"
+        expand-all
+      ></vue-drag-tree>
+    </div>
+
+    <!-- CATEGORIES  -->
+    <h2>(Legacy)</h2>
     <ul class="tree list-group">
       <category-item
         v-for="(category, index) in categories"
@@ -33,93 +56,45 @@
         />
       </li>
     </ul>
-    <!-- ! import-export -  -->
-    <h1>
-      Import
-    </h1>
-    <div>
-      <form @submit.prevent="doImportWrapped">
-        <div>
-          <input
-            type="file"
-            @change="setImportedFile($event.target.files[0])"
-          >
-        </div>
-        <button :disabled="!importedFile || isImporting">
-          Import JSON
-          <span v-if="isImporting">{{ importProgress }} </span>
-        </button>
-        <div v-if="importError">
-          Import failed for some with this reason:
-          <pre>{{ importError }}</pre>
-        </div>
-        <div v-if="importCount">
-          Imported {{ importCount }} items
-        </div>
-      </form>
-    </div>
-    <!--  -->
-    <h1>
-      Export
-    </h1>
-    <div>
-      <form @submit.prevent="doExportWrapped">
-        <button :disabled="isExporting">
-          Export categories as JSON
-          <span v-if="isExporting">{{ progress }}</span>
-        </button>
-      </form>
-    </div>
+    <!-- /CATEGORIES -->
 
-    <!-- /import-export -  -->
+    <import-export />
 
   </div>
 </template>
 
 <script>
 import { mapState, mapActions, mapMutations, mapGetters } from "vuex";
-import FileSaver from 'file-saver';
-import CategoryItem from './category-item.vue'
+import FileSaver from "file-saver";
+import CategoryItem from "./category-item.vue"
+import ImportExport from "./import-export.vue"
 export default {
   components: {
-    CategoryItem
+    CategoryItem, ImportExport
   },
 
   data() {
     return {
       isAddingChild: false,
-      newChild: '',
-      // --- import-export --- 
-      progress: '',
-      importProgress: '',
-      importedFile: null,
-      // --- /import-export --- 
-
+      newChild: "",
     }
   },
 
   computed: {
-    ...mapState("categories", { categories: "itemTree" }),
-    // --- import-export --- 
-    ...mapState('categoriesImportExport', ['isExporting', 'isImporting', 'exportedData']),
-    ...mapGetters('categoriesImportExport', ['exportFilename', 'importError', 'importCount'])
-    // --- /import-export --- 
+    ...mapState('categories', { categories: 'itemTree' }),
+
   },
 
   created() {
-    this.$store.dispatch("categories/fetchAll");
+    this.$store.dispatch('categories/fetchAll');
   },
 
   methods: {
-    ...mapActions("categories", {
+    ...mapActions('categories', {
       addCategory: 'addNew',
       removeCategory: 'remove',
       editCategory: 'edit'
     }),
-
-    // --- import-export --- 
-    ...mapActions('categoriesImportExport', ['doExport', 'setProperty', 'doImport', 'parseFile', 'hideUi']),
-    // --- /import-export --- 
 
     toggleSidebar() {
       this.toggleUI('showSidebar');
@@ -127,7 +102,7 @@ export default {
 
     startAddChild() {
       this.isAddingChild = true;
-      this.newChild = '';
+      this.newChild = "";
     },
 
     doneAddChild() {
@@ -136,68 +111,45 @@ export default {
       // console.log({ parent: null, value: this.newChild });
       this.addCategory({ parent: null, value: this.newChild });
       this.isAddingChild = false;
-      this.newChild = '';
+      this.newChild = "";
     },
 
     cancelAddChild() {
       this.isAddingChild = false;
-      this.newChild = '';
+      this.newChild = "";
     },
 
-    // --- import-export --- 
+    // -- Tree editor
 
-    async doImportWrapped() {
-      const progress = () => {
-        setTimeout(() => {
-          if (this.isImporting) {
-            const dots = (this.importProgress.length + 1) % 4;
-
-            this.importProgress = '.'.repeat(dots);
-            setTimeout(progress, 400);
-          }
-          else {
-            this.importProgress = '';
-          }
-        })
-      };
-
-      progress();
-      await this.doImport(this.importedFile);
-      await this.$store.dispatch("categories/fetchAll");
-
+    allowDrag(model, component) {
+      return true;
     },
-
-    async doExportWrapped() {
-      const progress = () => {
-        setTimeout(() => {
-          if (this.isImporting) {
-            const dots = (this.importProgress.length + 1) % 4;
-
-            this.importProgress = '.'.repeat(dots);
-            setTimeout(progress, 400);
-          }
-          else {
-            this.importProgress = '';
-          }
-        })
-      }
-
-      progress();
-
-      await this.doExport();
-      const blob = new Blob(this.exportedData, { type: 'application/octet-stream' });
-      FileSaver.saveAs(blob, this.exportFilename);
+    allowDrop(model, component) {
+      return true;
     },
-
-
-    setImportedFile(file) {
-      this.importedFile = file;
+    curNodeClicked(model, component) {
+      console.log("curNodeClicked", model, component);
+    },
+    dragHandler(model, component, e) {
+      console.log("dragHandler: ", model, component, e);
+    },
+    dragEnterHandler(model, component, e) {
+      console.log("dragEnterHandler: ", model, component, e);
+    },
+    dragLeaveHandler(model, component, e) {
+      console.log("dragLeaveHandler: ", model, component, e);
+    },
+    dragOverHandler(model, component, e) {
+      console.log("dragOverHandler: ", model, component, e);
+    },
+    dragEndHandler(model, component, e) {
+      console.log("dragEndHandler: ", model, component, e);
+    },
+    dropHandler(model, component, e) {
+      console.log("dropHandler: ", model, component, e);
     }
-    // --- /import-export --- 
 
   },
-
-
   directives: {
     focus: function (el, binding) {
       if (binding.value) {

@@ -1,5 +1,7 @@
 from unittest import TestCase
-import os, sys, io
+import os
+import sys
+import io
 from chrono import Timer
 import json
 import random
@@ -22,19 +24,19 @@ FILE_ROOT = os.path.dirname(__file__)
 class CategoryImportExportTest(TestCase):
 
     post_args = {
-        'content_type': 'application/json'
+        "content_type": "application/json"
     }
 
     upload_args = {
-        'content_type' : 'multipart/form-data'
+        "content_type": "multipart/form-data"
     }
 
     def setUp(self):
-        self._db = peewee.SqliteDatabase(':memory:')
+        self._db = peewee.SqliteDatabase(":memory:")
         components.DB.initialize(self._db)
         components.DB.connect()
         components.DB.create_tables(app.models, safe=True)
-        self.app = app.app.test_client()
+        self.app = app.APP.test_client()
 
         self._import_categories()
 
@@ -51,7 +53,7 @@ class CategoryImportExportTest(TestCase):
             for (category, random_order_id) in zip(categories, self._random_list(category_count)):
                 category.flatten_order = random_order_id
                 random_category_order[random_order_id] = category
-                # logging.info('Reorder id={} flatten_order={}'.format(category.id, random_order_id))
+                # logging.info("Reorder id={} flatten_order={}".format(category.id, random_order_id))
                 category.save()
 
         # - expect category order in random when select
@@ -68,26 +70,27 @@ class CategoryImportExportTest(TestCase):
         logging.info("Time spent: {} ms".format(timed.elapsed * 1000))
 
         # try:
-            # for child in children:
-                # logging.info('Order title={} id={} flatten_order={}'.format(child.title, child.id, child.flatten_order))
+        # for child in children:
+        # logging.info("Order title={} id={} flatten_order={}".format(child.title, child.id, child.flatten_order))
 
         # then
         # - expect categories be in order
 
-
     def _import_categories(self):
-        source_filename = 'test_categories.json'
-        with open(os.path.join(FILE_ROOT, 'assets', source_filename), encoding="utf-8") as f:
+        source_filename = "test_categories.json"
+        with open(os.path.join(FILE_ROOT, "assets", source_filename), encoding="utf-8") as f:
             text = f.read()
-            json_file =  io.BytesIO(text.encode("utf-8"))
-            json_data = json.loads(text)
+            json_file = io.BytesIO(text.encode("utf-8"))
+            # json_data = json.loads(text)
+
+            # TODO: Validate data
 
             # when
-            response = self.app.post(API_BASE+'/categories/upload/', data = {'file': (json_file, 'Untitled.json')}, **self.upload_args)
-            self.assertEquals(200, response.status_code, msg = response.data)
+            response = self.app.post(API_BASE + "/categories/upload/", data={"file": (json_file, "Untitled.json")}, **self.upload_args)
+            self.assertEquals(200, response.status_code, msg=response.data)
             response_json = json.loads(response.data)
 
-            self.assertEqual(len(response_json['items']), response_json['imported'])
+            self.assertEqual(len(response_json["items"]), response_json["imported"])
 
             return response_json
 
@@ -97,8 +100,7 @@ class CategoryImportExportTest(TestCase):
         return a
 
     def _validate_category(self, expected, actual):
-        self.assertEqual(expected['title'], actual['title'])
-        if expected['parent']:
-            self.assertEqual(expected['parent']['id'], actual['parent']['id'])
+        self.assertEqual(expected["title"], actual["title"])
+        if expected["parent"]:
+            self.assertEqual(expected["parent"]["id"], actual["parent"]["id"])
         pass
-

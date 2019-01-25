@@ -1,20 +1,18 @@
 # coding=utf-8
-import logging
-
-import os, io
+import io
 from itertools import groupby
 from csv import DictReader
 
 from calendar import mdays
 from datetime import datetime, timedelta
-import peewee
-from playhouse.shortcuts import *
+from playhouse.shortcuts import dict_to_model, model_to_dict
 
-import components
-from items.model import Item, TaggedItem
-from categories.model import Category
-from categories import categoryService
-from tags import TagService
+from app import components
+from app.items.model import Item, TaggedItem
+from app.categories.model import Category
+from app.categories import categoryService
+from app.tags import TagService
+
 
 class ItemService(components.Service):
     _model_class = Item
@@ -36,16 +34,16 @@ class ItemService(components.Service):
         # Because order can be suck sometimes
         date_item_list = []
         for date, items in date_items.items():
-            date_item_list.append({"date":date, "items": items})
+            date_item_list.append({"date": date, "items": items})
         return date_item_list
 
     def fetch_all_items(self, fetch_month=None, fetch_range=None):
         assert bool(fetch_month) != bool(fetch_range)
 
-        rq = lambda fetch_from, fetch_to : Item.select().where(
+        def rq(fetch_from, fetch_to): return Item.select().where(
             Item.is_deleted == False,
-                Item.date.between(fetch_from, fetch_to)
-            ).order_by(Item.created.desc())
+            Item.date.between(fetch_from, fetch_to)
+        ).order_by(Item.created.desc())
 
         if fetch_month:
             fetch_from = datetime(fetch_month[0], fetch_month[1], 1)
@@ -72,10 +70,9 @@ class ItemService(components.Service):
             Item.is_deleted == False
         ).order_by(Item.created.desc())
 
-
     def read_item(self, item_id):
         item = Item.get(Item.id == item_id,
-            Item.is_deleted == False)
+                        Item.is_deleted == False)
         if not item:
             raise Item.DoesNotExist()
         return item
@@ -105,7 +102,7 @@ class ItemService(components.Service):
             for item_json in items_json:
                 item = self.create_item(item_json)
                 items.append(item)
-                counter +=1
+                counter += 1
         return (counter, items)
 
     def csv_import_items(self, text):
@@ -116,22 +113,22 @@ class ItemService(components.Service):
             for item_json in reader:
                 item_json["tags"] = [tag.strip() for tag in item_json["tags"].split(",")]
 
-                category_title = None
+                category_name = None
                 if "category" in item_json:
-                    category_title = item_json["category"]
+                    category_name = item_json["category"]
                     del item_json["category"]
 
                 item = self.create_item(item_json)
 
-                if not category_title:
-                    raise RuntimeError('No cateory was given item_count: {}'.format(counter))
-                item.category  = categoryService.find_by_title(category_title)
+                if not category_name:
+                    raise RuntimeError("No category was given item_count: {}".format(counter))
+                item.category = categoryService.find_by_name(category_name)
                 if not item.category:
-                    raise RuntimeError('Invlaid category {} was given at item_count: {}'.format(category_title,counter))
+                    raise RuntimeError("Invalid category {} was given at item_count: {}".format(category_name, counter))
                 item.save()
 
                 items.append(item)
-                counter +=1
+                counter += 1
         return (counter, items)
 
     def update_item(self, item_id, item_json):
@@ -171,10 +168,11 @@ class ItemService(components.Service):
         item_json["date"] = item.date.strftime(self._DATE_FMT)
         item_json["tags"] = [str(tag.tag) for tag in item.tags]
         if item.category:
-            item_json["category"] = {"id" : item.category.id, "title": item.category.title}
+            item_json["category"] = {"id": item.category.id, "name": item.category.name}
         else:
             item_json["category"] = None
         return item_json
+
 
 itemService = ItemService()
 
@@ -185,6 +183,6 @@ class ItemReportService(components.Service):
 
 
 def init(app, api, models):
-    from items.controller import ItemListController, ItemController, ItemImportController
+    from app.items.controller import ItemListController, ItemController, ItemImportController
     components.register_controllers(api, [ItemListController, ItemController, ItemImportController])
     models.extend([Item, TaggedItem])

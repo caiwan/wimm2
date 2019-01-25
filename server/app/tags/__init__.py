@@ -6,14 +6,15 @@ import fuzzy
 import Levenshtein
 from slugify import slugify
 
-import components
-from tags.model import Tag, FuzzyTag
+from app import components
+from app.tags.model import Tag, FuzzyTag
+
 
 class TagService(components.Service):
     _model_class = Tag
 
     def fetch_all_items(self, search_query, result_limit):
-        if search_query :
+        if search_query:
             return self.search_tags(search_query, result_limit)
         return Tag.select()
 
@@ -27,7 +28,7 @@ class TagService(components.Service):
         words = [word for word in self._make_fuzzy(search_query.split(" ")) if word]
         fuzzies = []
         # TODO: Optimize this select
-        for word in words :
+        for word in words:
             fuzzy = FuzzyTag.select().where(FuzzyTag.fuzzy.contains(word[0]), FuzzyTag.type == word[1])
             fuzzies.extend(list(fuzzy))
 
@@ -37,16 +38,14 @@ class TagService(components.Service):
                 result_map[fuzzy.tag] = ld
 
         # order results by score
-        result_map = dict((k,result_map[k]) for k in sorted(result_map, key=result_map.get))
+        result_map = dict((k, result_map[k]) for k in sorted(result_map, key=result_map.get))
 
         logging.debug(
-            "resut_set_distances={" +
-            ", ".join([ str(k.tag)+"="+str(v) for k, v in result_map.items()]) +
-            "}"
+            "result_set_distances={" + ", ".join([str(k.tag) + "=" + str(v) for k, v in result_map.items()]) + "}"
         )
 
         if result_limit:
-            return  [tag for tag in result_map.keys()][:result_limit]
+            return [tag for tag in result_map.keys()][:result_limit]
         return [tag for tag in result_map.keys()]
 
     def bulk_search_or_insert(self, tags):
@@ -56,7 +55,7 @@ class TagService(components.Service):
             try:
                 tag = Tag.get(Tag.tag == tag)
                 tag_items.append(tag)
-            except Tag.DoesNotExist as e:
+            except Tag.DoesNotExist:
                 new_tags.append(tag)
 
         created_tags = []
@@ -83,7 +82,7 @@ class TagService(components.Service):
     def _create_tag_from_string(self, tag_str):
         tag = Tag(tag=tag_str)
         fuzzies = [FuzzyTag(tag=tag, fuzzy=fuzzy_word[0], type=fuzzy_word[1]) for fuzzy_word in self._make_fuzzy(tag_str.split(" ")) if fuzzy_word[0]]
-        return (tag,fuzzies)
+        return (tag, fuzzies)
 
     _dmeta = fuzzy.DMetaphone()
     _nysiis = fuzzy.nysiis
@@ -96,8 +95,9 @@ class TagService(components.Service):
             yield (dmeta.decode("utf-8") if dmeta else None, 1)
             yield (self._nysiis(slug), 2)
 
+
 def init(app, api, models):
-    from tags.controller import TagAutoCompleteController
+    from app.tags.controller import TagAutoCompleteController
     components.register_controllers(api, [TagAutoCompleteController])
     models.extend([Tag, FuzzyTag])
     pass

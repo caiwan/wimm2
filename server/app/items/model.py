@@ -1,8 +1,8 @@
 import peewee
 
-import components
-from tags.model import Tag 
-from categories.model import Category
+from app import components
+from app.tags.model import Tag
+from app.categories.model import Category
 
 
 class Item(components.BaseDocumentModel):

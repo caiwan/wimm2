@@ -1,22 +1,20 @@
 import logging
-import os
-import sys
 
 import json
-
-from datetime import date, datetime, time
+from datetime import datetime, date
 
 import peewee
-from playhouse.shortcuts import *
-from playhouse.pool import *
+from playhouse.shortcuts import Proxy
+from playhouse.shortcuts import dict_to_model, model_to_dict
 
 from flask_restful import Resource
 
-
-# Service
+BASE_PATH = "/api"
 
 
 class Service:
+    """ Base service class
+    """
     _name = ""
     _model_class = None
     _settings = {}
@@ -41,7 +39,7 @@ class Service:
     def update_item(self, item_id, item_json):
         assert self._model_class
         my_item = self._model_class.select().where(self._model_class.id == item_id,
-            self._model_class.is_deleted == False).get()
+                                                   self._model_class.is_deleted == False).get()
         if my_item:
             item = dict_to_model(self._model_class, item_json)
             item.id = my_item.id
@@ -53,7 +51,7 @@ class Service:
     def delete_item(self, item_id):
         assert self._model_class
         my_item = self._model_class.select().where(self._model_class.id == item_id,
-            self._model_class.is_deleted == False).get()
+                                                   self._model_class.is_deleted == False).get()
         if my_item:
             my_item.is_deleted = True
             my_item.changed()
@@ -64,19 +62,20 @@ class Service:
     def serialize_item(self, item):
         try:
             item_json = model_to_dict(item, exclude=['is_deleted'])
-            del item_json['is_deleted'] # Exclude does nothing :(
+            del item_json['is_deleted']  # Exclude does nothing :(
             return item_json
         except:
-            logger.exception(str(item))
+            logging.exception(str(item))
             raise
 
 
 # -- Controller
 
-BASE_PATH = "/api"
 
 
 class Controller(Resource):
+    """ Base controller Class
+    """
     path = ""
     _service = None
 
@@ -135,7 +134,6 @@ class Controller(Resource):
             logging.exception(msg)
             return({'error': [msg]}, 400)
 
-
     def _update(self, item_id, item_json, *args, **kwargs):
         _cls = self._get_cls()
         if '_id' in item_json:
@@ -149,7 +147,6 @@ class Controller(Resource):
             msg = "Bad request: " + str(e)
             logging.exception(msg)
             return({'error': [msg]}, 400)
-
 
     def _delete(self, item_id, *args, **kwargs):
         _cls = self._get_cls()
@@ -165,7 +162,10 @@ class Controller(Resource):
         return ('', 200)
 
 
+#
 class MyJsonEncoder(json.JSONEncoder):
+    """ Custom JSON enoder for certatin type of objects
+    """
     def default(self, obj):
         # if isinstance(obj, mongoengine.fields.ObjectId):
             # return str(obj)
@@ -181,12 +181,18 @@ class MyJsonEncoder(json.JSONEncoder):
 DB = Proxy()
 
 
-class BaseModel(Model):
+class BaseModel(peewee.
+Model):
+    """ Peewee's Base model
+    """
     class Meta:
         database = DB
 
 
 class BaseDocumentModel(BaseModel):
+    """ Base model for document handling
+    w/ extra fields built-in
+    """
     created = peewee.DateTimeField(null=False, default=datetime.now)
     edited = peewee.DateTimeField(null=False, default=datetime.now, index=True)
     is_deleted = peewee.BooleanField(null=False, default=False)
@@ -194,9 +200,8 @@ class BaseDocumentModel(BaseModel):
     def changed(self):
         self.edited = datetime.now()
 
+
 # --- Register class tools
-
-
 def register_controllers(api, controllers):
     for clazz in controllers:
         path = BASE_PATH + clazz.path
@@ -208,18 +213,19 @@ def register_controllers(api, controllers):
 def database_init(app, models):
     logging.debug("ConnectDB: " + app.config["DATABASE"])
     if app.config["DATABASE"] == "postgresql":
+        from playhouse.pool import PooledPostgresqlExtDatabase
         database = PooledPostgresqlExtDatabase(
             app.config["DATABASE_NAME"], max_connections=16, stale_timeout=300, **app.config["DATABASE_AUTH"])
 
     elif app.config["DATABASE"] == "sqlite":
-        database = SqliteDatabase(app.config["DATABASE_PATH"], pragmas=(
+        from playhouse.pool import PooledSqliteDatabase
+        database = PooledSqliteDatabase(app.config["DATABASE_PATH"], pragmas=(
             ('journal_mode', 'wal'), ('cache_size', -1024 * 64)))
 
     else:
         raise RuntimeError("No database set or invalid")
 
     DB.initialize(database)
-
 
 
 def database_connect():
@@ -233,6 +239,8 @@ def create_tables(app, models):
 # Module
 
 class Module:
+    """ Base module class
+    """
     _services = []
     _models = []
     _controls = []
