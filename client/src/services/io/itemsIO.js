@@ -1,20 +1,20 @@
-import { BaseIONode } from './_baseIO'
+import { BaseIONode } from './_baseIO';
 
 const AUTOCOMPLETE_LIMIT = 10;
 
 export class Stats extends BaseIONode {
-  totalSum({
+  totalSum ({
     dateFrom,
     dateTo,
     interval
   }) {
     return fetch(`${this.root}/total_sum/?from=${dateFrom}&to=${dateTo}&interval=${interval}`, {
-      credentials: 'same-origin',
+      credentials: 'same-origin'
     })
-      .then(v => v.json())
+      .then(v => v.json());
   }
 
-  tagSumOverTime({
+  tagSumOverTime ({
     dateFrom,
     dateTo,
     interval,
@@ -35,12 +35,12 @@ export class Stats extends BaseIONode {
     }
 
     return fetch(`${this.root}/tag_sum_over_time/?${params}`, {
-      credentials: 'same-origin',
+      credentials: 'same-origin'
     })
-      .then(v => v.json())
+      .then(v => v.json());
   }
 
-  tagSum({
+  tagSum ({
     dateFrom,
     dateTo,
     tagCount,
@@ -59,14 +59,14 @@ export class Stats extends BaseIONode {
     }
 
     return fetch(`${this.root}/tag_sum/?${params}`, {
-      credentials: 'same-origin',
+      credentials: 'same-origin'
     })
-      .then(v => v.json())
+      .then(v => v.json());
   }
 }
 
 export class Items extends BaseIONode {
-  fetchMonth({
+  fetchMonth ({
     year,
     month
   }) {
@@ -77,25 +77,25 @@ export class Items extends BaseIONode {
       .then(data => {
         data.forEach(date => {
           date.items.forEach(item => {
-            item.date = date.date
+            item.date = date.date;
           });
         });
 
-        return data
+        return data;
       });
   }
 
-  fetchRange({
+  fetchRange ({
     dateFrom,
     dateTo
   }) {
     return fetch(`${this.root}/items/?from=${dateFrom}&to=${dateTo}`, {
       credentials: 'same-origin'
     })
-      .then(v => v.json())
+      .then(v => v.json());
   }
 
-  add(item) {
+  add (item) {
     if (item) {
       return fetch(`${this.root}/items/`, {
         method: 'POST',
@@ -105,14 +105,14 @@ export class Items extends BaseIONode {
         .then(v => v.json())
         .then(data => {
           // data.item = data;
-          return { 'item': data }
-        })
+          return { 'item': data };
+        });
     } else {
-      return Promise.resolve()
+      return Promise.resolve();
     }
   }
 
-  addFromFile(file) {
+  addFromFile (file) {
     const data = new FormData();
     data.append('file', file);
 
@@ -122,10 +122,10 @@ export class Items extends BaseIONode {
       headers: this.headers,
       body: data
     })
-      .then(v => v.json())
+      .then(v => v.json());
   }
 
-  remove(items) {
+  remove (items) {
     if (items.length) {
       return fetch(`${this.root}/items/`, {
         method: 'DELETE',
@@ -134,33 +134,33 @@ export class Items extends BaseIONode {
           'items': items
         })
       })
-        .then(v => v.json())
+        .then(v => v.json());
     } else {
-      return Promise.resolve()
+      return Promise.resolve();
     }
   }
 
-  edit(item) {
+  edit (item) {
     return fetch(`${this.root}/items/${item.id}/`, {
       method: 'PATCH',
       credentials: 'same-origin',
       ...this.io.toJson(item)
     })
-      .then(v => v.json())
+      .then(v => v.json());
   }
 }
 
 export class Tags extends BaseIONode {
-  fetchAll() {
+  fetchAll () {
     return fetch(`${this.root}/autocomplete/`, {
-      credentials: "same-origin"
+      credentials: 'same-origin'
     })
       .then(v => v.json());
   }
 
-  autocomplete(term) {
+  autocomplete (term) {
     return fetch(`${this.root}/autocomplete/?q=${term}&l=${AUTOCOMPLETE_LIMIT}`, {
-      credentials: "same-origin"
+      credentials: 'same-origin'
     })
       .then(v => v.json());
   }

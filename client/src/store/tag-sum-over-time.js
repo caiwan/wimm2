@@ -1,7 +1,7 @@
 import moment from 'moment';
 
 import io from '@/services/io';
-import {getColor} from '@/services/palette';
+import { getColor } from '@/services/palette';
 
 export default {
   namespaced: true,
@@ -21,14 +21,14 @@ export default {
   mutations: {
     toggleCalendar: state => state.isCalendarVisible = !state.isCalendarVisible,
     hideUi: state => state.isCalendarVisible = false,
-    setProperty: (state, {key, value}) => state[key] = value,
+    setProperty: (state, { key, value }) => state[key] = value,
     setValues: (state, model) => {
       const labels = [];
       const values = [];
 
-      const {base, tags} = model;
+      const { base, tags } = model;
 
-      for(let [date, value] of base){
+      for (let [date, value] of base) {
         labels.push(date);
         values.push(value);
       }
@@ -36,7 +36,7 @@ export default {
       state.tagValues = tags;
       state.labels = labels;
       state.values = values;
-    },
+    }
   },
   getters: {
     chartData: state => {
@@ -52,26 +52,26 @@ export default {
         });
       });
 
-      datasets.push(        {
-          // TODO: This always triggers chart animation
-          type: 'line',
-          label: `${dateFrom} -- ${dateTo} (${interval})`,
-          borderColor: '#286d81',
-          backgroundColor: 'rgba(40, 109, 129, 0.3)',
-          data: state.values,
-          steppedLine: true
-        });
+      datasets.push({
+        // TODO: This always triggers chart animation
+        type: 'line',
+        label: `${dateFrom} -- ${dateTo} (${interval})`,
+        borderColor: '#286d81',
+        backgroundColor: 'rgba(40, 109, 129, 0.3)',
+        data: state.values,
+        steppedLine: true
+      });
 
       return {
         labels: state.labels,
         datasets
-      }
+      };
     }
   },
   actions: {
-    toggleCalendar: ({commit}) => commit('toggleCalendar'),
-    hideUi: ({commit}) => commit('hideUi'),
-    async query({commit, state}){
+    toggleCalendar: ({ commit }) => commit('toggleCalendar'),
+    hideUi: ({ commit }) => commit('hideUi'),
+    async query ({ commit, state }) {
       const values = await io.stats.tagSumOverTime({
         dateFrom: state.dateFrom,
         dateTo: state.dateTo,
@@ -83,6 +83,6 @@ export default {
 
       commit('setValues', values);
     },
-    setProperty: ({commit}, model) => commit('setProperty', model)
+    setProperty: ({ commit }, model) => commit('setProperty', model)
   }
-}
+};

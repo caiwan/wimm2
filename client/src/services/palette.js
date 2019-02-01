@@ -12,6 +12,6 @@ const PALETTE = [
   '#5e4fa2'
 ];
 
-export function getColor(i){
+export function getColor (i) {
   return PALETTE[i % PALETTE.length];
 }

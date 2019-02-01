@@ -7,6 +7,6 @@ export default {
     initialized: (state, initializing) => state.isInitializing = !initializing
   },
   actions: {
-    initialized: ({commit}) => commit('initialized', true)
+    initialized: ({ commit }) => commit('initialized', true)
   }
-}
+};

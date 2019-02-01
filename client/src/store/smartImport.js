@@ -1,10 +1,10 @@
 import io from '@/services/io';
 
-function copyObject(target, source) {
+function copyObject (target, source) {
   for (const key in source) {
     if (source.hasOwnProperty(key)) {
-      if (typeof source[key] == 'function') continue;
-      else if (typeof source[key] == 'object' && target[key] != null) copyObject(target[key], source[key]); // If there's any loop in there, well ... 
+      if (typeof source[key] === 'function') continue;
+      else if (typeof source[key] === 'object' && target[key] != null) copyObject(target[key], source[key]); // If there's any loop in there, well ...
       // TODO Array?
       else target[key] = source[key];
     }
@@ -16,7 +16,7 @@ export default {
   namespaced: true,
   state: {
     isImporting: false,
-    importResponse: {},
+    importResponse: {}
   },
 
   getters: {
@@ -51,7 +51,7 @@ export default {
       commit
     }, model) => commit('setProperty', model),
 
-    async doImport({ commit }, { type, file }) {
+    async doImport ({ commit }, { type, file }) {
       commit('setProperty', {
         key: 'isImporting',
         value: true
@@ -72,7 +72,7 @@ export default {
       }
     },
 
-    async continueEdit({ commit }) {
+    async continueEdit ({ commit }) {
       const model = await io.smartImport.fetchAll();
       commit('setProperty', {
         key: 'importResponse',
@@ -80,20 +80,20 @@ export default {
       });
     },
 
-    async saveItem({ commit }, { item, storeItem }) {
+    async saveItem ({ commit }, { item, storeItem }) {
       const model = await io.smartImport.saveItem(item, storeItem);
       commit('editResponse', model);
     },
 
-    async deleteItem({ commit }, { itemIndex, item }) {
+    async deleteItem ({ commit }, { itemIndex, item }) {
       await io.smartImport.deleteItem(item);
     },
 
-    hideUi({
+    hideUi ({
       commit
     }) {
-      commit('hideUi')
+      commit('hideUi');
     }
 
   }
-}
+};

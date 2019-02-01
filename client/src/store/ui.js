@@ -4,17 +4,17 @@ export default {
     sidebarVisible: false
   },
   getters: {
-    overlayVisible(state, getters, rootState) {
-      return state.sidebarVisible
-        || rootState.app.isInitializing
-        || rootState.itemList.isLoading
-        || rootState.totalSum.isCalendarVisible
-        || rootState.tagSum.isCalendarVisible
-        || rootState.tagSumOverTime.isCalendarVisible;
+    overlayVisible (state, getters, rootState) {
+      return state.sidebarVisible ||
+        rootState.app.isInitializing ||
+        rootState.itemList.isLoading ||
+        rootState.totalSum.isCalendarVisible ||
+        rootState.tagSum.isCalendarVisible ||
+        rootState.tagSumOverTime.isCalendarVisible;
     },
-    spinnerVisible(state, getters, rootState) {
-      return rootState.app.isInitializing
-        || rootState.itemList.isLoading;
+    spinnerVisible (state, getters, rootState) {
+      return rootState.app.isInitializing ||
+        rootState.itemList.isLoading;
     }
   },
   mutations: {

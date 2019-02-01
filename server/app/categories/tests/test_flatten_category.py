@@ -11,7 +11,7 @@ import logging
 import peewee
 
 import app
-import components
+from app import components
 
 from categories import categoryService
 

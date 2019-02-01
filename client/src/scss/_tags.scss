@@ -1,4 +1,3 @@
-
 // $tag-drop-offset: calc($tag-margin + $tag-padding + $tag-size);
 
 .tags {
@@ -68,7 +67,7 @@
 
     &.dropup {
       max-height: 40vh;
-      // Extra translation in order to appear right above the input 
+      // Extra translation in order to appear right above the input
       transform: translateY(-100%) translateY(-$tag-selector-offset);
       flex-direction: column-reverse;
     }

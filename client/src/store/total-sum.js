@@ -2,7 +2,6 @@ import moment from 'moment';
 
 import io from '@/services/io';
 
-
 export default {
   namespaced: true,
   state: {
@@ -17,14 +16,14 @@ export default {
   mutations: {
     toggleCalendar: state => state.isCalendarVisible = !state.isCalendarVisible,
     hideUi: state => state.isCalendarVisible = false,
-    setProperty: (state, {key, value}) => state[key] = value,
+    setProperty: (state, { key, value }) => state[key] = value,
     setValues: (state, model) => {
       const labels = [];
       const values = [];
 
       let sum = 0;
 
-      for(let [date, value] of model){
+      for (let [date, value] of model) {
         sum += value;
 
         labels.push(date);
@@ -33,7 +32,7 @@ export default {
 
       state.labels = labels;
       state.values = values;
-    },
+    }
   },
   getters: {
     chartData: state => {
@@ -50,17 +49,17 @@ export default {
             data: state.values
           }
         ]
-      }
+      };
     }
   },
   actions: {
-    toggleCalendar: ({commit}) => commit('toggleCalendar'),
-    hideUi: ({commit}) => commit('hideUi'),
-    async query({commit, state}){
-      const values = await io.stats.totalSum({dateFrom: state.dateFrom, dateTo: state.dateTo, interval: state.interval});
+    toggleCalendar: ({ commit }) => commit('toggleCalendar'),
+    hideUi: ({ commit }) => commit('hideUi'),
+    async query ({ commit, state }) {
+      const values = await io.stats.totalSum({ dateFrom: state.dateFrom, dateTo: state.dateTo, interval: state.interval });
 
       commit('setValues', values);
     },
-    setProperty: ({commit}, model) => commit('setProperty', model)
+    setProperty: ({ commit }, model) => commit('setProperty', model)
   }
-}
+};

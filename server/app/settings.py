@@ -1,6 +1,6 @@
 # coding=utf-8
 
-from app import components
+from app from app import components
 
 
 class AppSettingsController(components.Controller):

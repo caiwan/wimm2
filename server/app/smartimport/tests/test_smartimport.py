@@ -11,7 +11,7 @@ import ddt
 import peewee
 
 import app
-from app import components
+from app from app import components
 
 from app.categories import categoryService
 

@@ -1,16 +1,68 @@
 [
-    {"id": 1,"name": "Income","parent": null},
-    {"id": 2,"name": "Expense","parent": null},
-
-    {"id": 3,"name": "Food and groceries","parent": {"id":2}},
-    {"id": 4,"name": "Breakfast","parent": {"id":3}},
-    {"id": 5,"name": "Lunch","parent": {"id":3}},
-    {"id": 6,"name": "Dinner","parent": {"id":3}},
-
-    {"id": 7,"name": "Groceries","parent": {"id":3}},
-
-    {"id": 8,"name": "Restaurant","parent": {"id":3}},
-    {"id": 9,"name": "Coffee shop","parent": {"id":3}},
-
-    {"id": 10,"name": "Salary","parent": {"id":1}}
+  {
+    "id": 1,
+    "name": "Income",
+    "parent": null
+  },
+  {
+    "id": 2,
+    "name": "Expense",
+    "parent": null
+  },
+  {
+    "id": 3,
+    "name": "Food and groceries",
+    "parent": {
+      "id": 2
+    }
+  },
+  {
+    "id": 4,
+    "name": "Breakfast",
+    "parent": {
+      "id": 3
+    }
+  },
+  {
+    "id": 5,
+    "name": "Lunch",
+    "parent": {
+      "id": 3
+    }
+  },
+  {
+    "id": 6,
+    "name": "Dinner",
+    "parent": {
+      "id": 3
+    }
+  },
+  {
+    "id": 7,
+    "name": "Groceries",
+    "parent": {
+      "id": 3
+    }
+  },
+  {
+    "id": 8,
+    "name": "Restaurant",
+    "parent": {
+      "id": 3
+    }
+  },
+  {
+    "id": 9,
+    "name": "Coffee shop",
+    "parent": {
+      "id": 3
+    }
+  },
+  {
+    "id": 10,
+    "name": "Salary",
+    "parent": {
+      "id": 1
+    }
+  }
 ]

@@ -6,7 +6,7 @@ from datetime import datetime
 import peewee
 
 import app
-from app import components
+from app from app import components
 
 API_ROOT = components.BASE_PATH
 

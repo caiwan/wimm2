@@ -1,18 +1,18 @@
-import { BaseIONode } from './_baseIO'
+import { BaseIONode } from './_baseIO';
 
 export class Categories extends BaseIONode {
-  constructor(io) {
-    super(io)
+  constructor (io) {
+    super(io);
   }
 
-  fetchAll() {
+  fetchAll () {
     return fetch(`${this.root}/categories/`, {
       credentials: 'same-origin'
     })
       .then(v => v.json());
   }
 
-  add(item) {
+  add (item) {
     return fetch(`${this.root}/categories/`, {
       method: 'POST',
       credentials: 'same-origin',
@@ -21,7 +21,7 @@ export class Categories extends BaseIONode {
       .then(v => v.json());
   }
 
-  edit(item) {
+  edit (item) {
     return fetch(`${this.root}/categories/${item.id}/`, {
       method: 'PUT',
       credentials: 'same-origin',
@@ -30,15 +30,15 @@ export class Categories extends BaseIONode {
       .then(v => v.json());
   }
 
-  remove(item) {
+  remove (item) {
     return fetch(`${this.root}/categories/${item.id}/`, {
       method: 'DELETE',
-      credentials: 'same-origin',
-    })
+      credentials: 'same-origin'
+    });
   }
 
   /// 
-  addFromFile(file) {
+  addFromFile (file) {
     const data = new FormData();
     data.append('file', file);
 
@@ -48,7 +48,6 @@ export class Categories extends BaseIONode {
       headers: this.headers,
       body: data
     })
-      .then(v => v.json())
+      .then(v => v.json());
   }
 }
-

@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 
-import BudgetEditor from '@/components/budget/component'
-import BudgetEditorHeader from '@/components/budget/header'
+import BudgetEditor from '@/components/budget/component';
+import BudgetEditorHeader from '@/components/budget/header';
 import CategoryEditor from '@/components/categories/component';
 import CategoryEditorHeader from '@/components/categories/header';
 import ImportExport from '@/components/import-export/component';
@@ -15,7 +15,7 @@ import SmartImportHeader from '@/components/smart-import/header';
 import TagSum from '@/components/tag-sum/component';
 import TagSumHeader from '@/components/tag-sum/header';
 import TagSumOverTime from '@/components/tag-sum-over-time/component';
-import TagSumOverTimeHeader from '@/components/tag-sum-over-time/header'
+import TagSumOverTimeHeader from '@/components/tag-sum-over-time/header';
 import TotalSum from '@/components/total-sum/component';
 import TotalSumHeader from '@/components/total-sum/header';
 
@@ -26,7 +26,7 @@ export default new Router({
   routes: [{
     name: 'index',
     path: '/',
-    redirect() {
+    redirect () {
       const now = store.state.itemList.currentDate;
 
       return {
@@ -35,7 +35,7 @@ export default new Router({
           year: now.format('YYYY'),
           month: now.format('MM')
         }
-      }
+      };
     }
   },
   {

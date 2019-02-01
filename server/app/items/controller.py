@@ -2,7 +2,7 @@ import logging
 
 from flask_restful import request
 
-from app import components
+from app from app import components
 from app.items import itemService, ItemReportService
 
 

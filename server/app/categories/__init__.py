@@ -6,7 +6,7 @@ import peewee
 from playhouse.shortcuts import dict_to_model, model_to_dict
 from playhouse.shortcuts import Value
 
-from app import components
+from app from app import components
 from app.categories.model import Category
 
 import logging

@@ -3,7 +3,6 @@ import Vue from 'vue';
 
 import io from '@/services/io';
 
-
 export default {
   namespaced: true,
   state: {
@@ -34,9 +33,8 @@ export default {
 
       const today = moment().format('YYYY-MM-DD');
       if (nextDate.format('YYYY-MM-DD') === today) {
-        state.today = today
-      }
-      else {
+        state.today = today;
+      } else {
         state.today = nextDate.date(1).format('YYYY-MM-DD');
       }
     },
@@ -52,8 +50,7 @@ export default {
       let isSelected = !state.selected[itemId];
       if (isSelected) {
         Vue.set(state.selected, itemId, true);
-      }
-      else {
+      } else {
         Vue.delete(state.selected, itemId);
       }
     },
@@ -63,7 +60,7 @@ export default {
       const { dates, selected } = state;
 
       for (let date of dates) {
-        date.items = date.items.filter(d => selected[d.id] === undefined)
+        date.items = date.items.filter(d => selected[d.id] === undefined);
       }
 
       state.dates = dates.filter(d => d.items.length > 0);
@@ -74,8 +71,7 @@ export default {
       const [date] = state.dates.filter(d => d.date === model.item.date);
       if (date) {
         date.items.push(model.item);
-      }
-      else {
+      } else {
         if (moment(model.item.date, 'YYYY-MM-DD').format('YYYY-MM') === moment(state.today, 'YYYY-MM-DD').format('YYYY-MM')) {
           state.dates.push({
             date: model.item.date,
@@ -90,8 +86,7 @@ export default {
 
       if (item.date === dateItems.date) {
         dateItems.items[itemIndex] = item;
-      }
-      else {
+      } else {
         dateItems.items.splice(itemIndex, 1);
         if (!dateItems.items.length) {
           state.dates.splice(dateIndex, 1);
@@ -101,12 +96,11 @@ export default {
 
         if (dateItems) {
           dateItems.items.push(item);
-        }
-        else {
+        } else {
           state.dates.push({
             date: item.date,
             items: [item]
-          })
+          });
         }
       }
 
@@ -116,7 +110,7 @@ export default {
   actions: {
     toggleEditing: ({ commit }) => commit('toggle', 'isEditing'),
     toggleDeleting: ({ commit }) => commit('toggle', 'isDeleting'),
-    async fetchAllByDate({ commit }, { year, month }) {
+    async fetchAllByDate ({ commit }, { year, month }) {
       const yearMonth = moment().year(year).month(month).subtract(1, 'month');
 
       commit('fetchStarted');
@@ -124,15 +118,15 @@ export default {
       const dates = await io.items.fetchMonth({ year, month });
       dates.sort((left, right) => (left.date > right.date) - (left.date < right.date))
         .forEach(date => date.items.forEach(item => {
-          item.price = Number(item.price)
+          item.price = Number(item.price);
         }));
 
       commit('setDates', dates);
-      commit('setCurrentDate', yearMonth)
+      commit('setCurrentDate', yearMonth);
     },
     setToday: ({ commit }, date) => commit('setToday', date),
     selectItem: ({ commit }, itemId) => commit('selectItem', itemId),
-    async submit({ commit }, { item, callback }) {
+    async submit ({ commit }, { item, callback }) {
       commit('setBoolean', { key: 'isSubmitting', value: true });
 
       const model = await io.items.add(item);
@@ -145,7 +139,7 @@ export default {
       return model.item.id;
     },
 
-    async deleteSelected({ commit, state }) {
+    async deleteSelected ({ commit, state }) {
       const toDelete = Object.keys(state.selected);
 
       commit('setBoolean', { key: 'isLoading', value: true });
@@ -153,10 +147,10 @@ export default {
       commit('cleanDates');
       commit('setBoolean', { key: 'isLoading', value: false });
     },
-    async editItem({ commit }, model) {
+    async editItem ({ commit }, model) {
       const item = await io.items.edit(model.model);
       console.log('editItem', { item, model });
       commit('editItem', { item, ...model });
     }
   }
-}
+};

@@ -4,6 +4,7 @@ import json
 from datetime import datetime, date
 
 import peewee
+from peewee_migrate import Router
 from playhouse.shortcuts import Proxy
 from playhouse.shortcuts import dict_to_model, model_to_dict
 
@@ -68,8 +69,9 @@ class Service:
             logging.exception(str(item))
             raise
 
-
 # -- Controller
+
+
 class Controller(Resource):
     """ Base controller Class
     """
@@ -163,6 +165,7 @@ class Controller(Resource):
 class MyJsonEncoder(json.JSONEncoder):
     """ Custom JSON enoder for certatin type of objects
     """
+
     def default(self, obj):
         # if isinstance(obj, mongoengine.fields.ObjectId):
             # return str(obj)
@@ -206,6 +209,11 @@ def register_controllers(api, controllers):
     pass
 
 
+def register_modules(app, api, models, settings, modules):
+    for module in modules:
+        module.register(app, api, models, settings)
+
+
 def database_init(app, models):
     logging.debug("ConnectDB: " + app.config["DATABASE"])
     if app.config["DATABASE"] == "postgresql":
@@ -232,24 +240,41 @@ def create_tables(app, models):
     DB.create_tables(models, safe=True)
 
 
+def create_migrate():
+    router = Router(DB)
+    router.create("migrate")
+    pass
+
+
+def migrate_db():
+    pass
+
+
 # Module
 
 class Module:
     """ Base module class
     """
+    _name = ""
     _services = []
     _models = []
-    _controls = []
+    _controllers = []
     _is_initialized = False
 
-    def register(self, app, api, models, settings):
-        if not self._is_initialized:
-            for service in self._services:
-                pass
-            for control in self._controls:
-                pass
-            for model in self._models:
-                pass
-            self._is_initialized = True
-            pass
-        pass
+    @classmethod
+    def register(cls, app, api, models, settings):
+        if not cls._is_initialized:
+
+            for service in cls._services:
+                if service._settings and service._name:
+                    settings[service._name] = service._settings
+
+            for controller in cls._controllers:
+                path = BASE_PATH + controller.path
+                logging.info("Register endpoint {} {}".format(path, controller.__name__))
+                api.add_resource(controller, path)
+
+            if cls._models:
+                models.extend(cls._models)
+
+            cls._is_initialized = True

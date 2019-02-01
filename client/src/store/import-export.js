@@ -43,7 +43,7 @@ export default {
   },
   actions: {
     setProperty: ({ commit }, model) => commit('setProperty', model),
-    async doExport({ commit, state }) {
+    async doExport ({ commit, state }) {
       commit('setProperty', { key: 'isExporting', value: true });
 
       try {
@@ -53,25 +53,23 @@ export default {
         });
 
         commit('setData', { models });
-      }
-      finally {
+      } finally {
         commit('setProperty', { key: 'isExporting', value: false });
       }
     },
-    async doImport({ commit }, file) {
+    async doImport ({ commit }, file) {
       commit('setProperty', { key: 'isImporting', value: true });
 
       try {
         const model = await io.items.addFromFile(file);
 
         commit('setProperty', { key: 'importResponse', value: model });
-      }
-      finally {
+      } finally {
         commit('setProperty', { key: 'isImporting', value: false });
       }
     },
-    hideUi({ commit }) {
-      commit('hideUi')
+    hideUi ({ commit }) {
+      commit('hideUi');
     }
   }
-}
+};

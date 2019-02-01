@@ -18,7 +18,8 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   modules: {
     app,
-    categories, categoriesImportExport,
+    categories,
+categoriesImportExport,
     importExport,
     itemList,
     smartImport,

@@ -103,8 +103,8 @@
       }
 
       .button-group {
-        margin: -1 * $date-items-li-padding -1 * $date-items-li-padding -1 *
-          $date-items-li-padding $date-items-li-padding;
+        margin: -1 * $date-items-li-padding -1 * $date-items-li-padding -1 * $date-items-li-padding
+          $date-items-li-padding;
         border-left: $date-items-button-group-left-border;
         display: flex;
         flex-direction: column;

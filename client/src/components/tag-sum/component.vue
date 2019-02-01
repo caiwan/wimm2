@@ -59,7 +59,7 @@ import TagInput from '@/components/tag-input';
 
 export default {
   components: {
-    // HorizontalBarChart, 
+    // HorizontalBarChart,
     SettingsBar, Calendar, TagInput
   },
   data() {

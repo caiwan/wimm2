@@ -1,5 +1,5 @@
 from flask import request
-import components
+from app import components
 
 from estateplan import budgetService, assetService
 

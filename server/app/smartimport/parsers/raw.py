@@ -1,4 +1,4 @@
-import csv 
+import csv
 from dateutil.parser import parse as parse_date
 
 from smartimport.parsers import BaseParser
@@ -13,14 +13,14 @@ class RawParser(BaseParser):
         # Here comes the magic
         return row
 
-    def _read_csv(self,utf8_data, dialect=csv.excel, **kwargs):
+    def _read_csv(self, utf8_data, dialect=csv.excel, **kwargs):
         csv_reader = csv.DictReader(utf8_data, dialect=dialect, **kwargs)
         for row in csv_reader:
             yield {
-                'date': parse_date(row['date']),
-                'price': float(row['price']),
-                'text': row['tags'].strip(),
-                'tags': []
+                "date": parse_date(row["date"]),
+                "price": float(row["price"]),
+                "text": row["tags"].strip(),
+                "tags": []
             }
 
     def preprocess(self, payload):

@@ -1,10 +1,9 @@
-import {Bar, mixins} from 'vue-chartjs';
-
+import { Bar, mixins } from 'vue-chartjs';
 
 export default Bar.extend({
   mixins: [mixins.reactiveProp],
   props: ['chartData', 'options'],
-  data(){
+  data () {
     return {
       defaultOptions: {
         responsive: true,
@@ -32,9 +31,9 @@ export default Bar.extend({
           }]
         }
       }
-    }
+    };
   },
-  mounted(){
-    this.renderChart(this.chartData, this.options)
+  mounted () {
+    this.renderChart(this.chartData, this.options);
   }
 });

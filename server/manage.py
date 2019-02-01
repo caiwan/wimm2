@@ -18,7 +18,7 @@ manager = Manager(app.APP)
 
 class CreateDb(Command):
     def run(self):
-        from app import components
+        from app from app import components
         components.create_tables(app.APP, app.MODELS)
 
 

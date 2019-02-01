@@ -2,7 +2,7 @@ from datetime import datetime
 
 import peewee
 
-from app import components
+from app from app import components
 from app.items.model import Item
 from app.categories.model import Category
 from app.tags.model import Tag

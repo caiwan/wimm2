@@ -40,34 +40,32 @@ export default {
   },
   actions: {
     setProperty: ({ commit }, model) => commit('setProperty', model),
-    async doExport({ commit, state }) {
+    async doExport ({ commit, state }) {
       commit('setProperty', { key: 'isExporting', value: true });
 
       try {
-        const models = await io.categories.fetchAll()
+        const models = await io.categories.fetchAll();
         commit('setData', { models });
-      }
-      finally {
+      } finally {
         commit('setProperty', { key: 'isExporting', value: false });
       }
     },
-    async doImport({ commit, dispatch }, file) {
+    async doImport ({ commit, dispatch }, file) {
       commit('setProperty', { key: 'isImporting', value: true });
 
       try {
         const model = await io.categories.addFromFile(file);
         commit('setProperty', { key: 'importResponse', value: model });
-        // TODO Put this response into the category store without 
+        // TODO Put this response into the category store without
         // requiring to reload everything once again
-      }
-      finally {
+      } finally {
         commit('setProperty', { key: 'isImporting', value: false });
       }
 
       await dispatch('categories/reload', {}, { root: true });
     },
-    hideUi({ commit }) {
-      commit('hideUi')
+    hideUi ({ commit }) {
+      commit('hideUi');
     }
   }
-}
+};

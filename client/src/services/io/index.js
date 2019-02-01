@@ -8,7 +8,7 @@ import { Categories } from './categoriesIO';
 import { SmartImport } from './smartimportIO';
 
 class IO {
-  constructor() {
+  constructor () {
     this.headers = null;
     this.root = '';
 
@@ -34,17 +34,16 @@ class IO {
         this.stats = new Stats(this);
         this.smartImport = new SmartImport(this);
         this.categories = new Categories(this);
-
-      })
+      });
   }
 
-  toJson(data) {
+  toJson (data) {
     return {
       body: new Blob([JSON.stringify(data)], {
         type: 'application/json'
       }),
       headers: this.headers
-    }
+    };
   }
 }
 
