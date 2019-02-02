@@ -12,24 +12,26 @@
       ></drag-node>
     </template>
     <div class="dnd-container zebra ">
-      <span
-        class="add"
-        v-if="!isAddingChild"
-        @click="startAddChild"
-      >
-        + Add new
-      </span>
-      <input
-        autocomplete="off"
-        placeholder="Category"
-        class="add"
-        v-if="isAddingChild"
-        v-model="newChild"
-        v-focus="isAddingChild"
-        @blur="doneAddChild"
-        @keyup.enter="doneAddChild"
-        @keyup.esc="cancelAddChild"
-      />
+      <template v-if="!isAddingChild">
+        <span
+          class="add"
+          @click="startAddChild"
+        >
+          + Add new
+        </span>
+      </template>
+      <template v-else>
+        <input
+          autocomplete="off"
+          placeholder="Category"
+          class="add"
+          v-model="newChild"
+          v-focus="isAddingChild"
+          @blur="doneAddChild"
+          @keyup.enter="doneAddChild"
+          @keyup.esc="cancelAddChild"
+        />
+      </template>
     </div>
 
   </div>
@@ -133,6 +135,9 @@ export default {
       this.isAddingChild = false;
       this.newChild = '';
     },
+    emitEdit(model, component, e) {
+      this.$emit('edit', model, component, e);
+    }
   },
   updated() {
     zebrafy(this.$el);
@@ -216,6 +221,9 @@ $zebra-odd-color: #f6f6f6;
 
   .add {
     margin-left: 22px;
+  }
+  .edit {
+    margin-left: 0px;
   }
 }
 </style>

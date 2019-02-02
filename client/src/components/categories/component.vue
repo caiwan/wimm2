@@ -1,8 +1,5 @@
 <template>
   <div>
-
-    <h2>The stuff</h2>
-
     <div class="treeSelf">
       <drag-tree
         :data="categories"
@@ -21,13 +18,8 @@
         :disableDBClick="false"
         expand-all
       ></drag-tree>
-
     </div>
-
-    <!-- /CATEGORIES -->
-
     <import-export />
-
   </div>
 </template>
 
@@ -97,31 +89,32 @@ export default {
       return true;
     },
     curNodeClicked(model, component) {
-      console.log("curNodeClicked", model, component);
+      // console.log("curNodeClicked", model, component);
     },
     dragHandler(model, component, e) {
-      console.log("dragHandler: ", model, component, e);
+      // console.log("dragHandler: ", model, component, e);
     },
     dragEnterHandler(model, component, e) {
-      console.log("dragEnterHandler: ", model, component, e);
+      // console.log("dragEnterHandler: ", model, component, e);
     },
     dragLeaveHandler(model, component, e) {
-      console.log("dragLeaveHandler: ", model, component, e);
+      // console.log("dragLeaveHandler: ", model, component, e);
     },
     dragOverHandler(model, component, e) {
-      console.log("dragOverHandler: ", model, component, e);
+      // console.log("dragOverHandler: ", model, component, e);
     },
     dragEndHandler(model, component, e) {
-      console.log("dragEndHandler: ", model, component, e);
+      // console.log("dragEndHandler: ", model, component, e);
     },
     dropHandler(model, component, e) {
-      console.log("dropHandler: ", model, component, e);
+      // console.log("dropHandler: ", model, component, e);
     },
     newHandler(newItem) {
-      console.log('newHandler: ', newItem);
+      this.addCategory({ parent: null, name: newItem });
     },
-    editHandler(model, newItem) {
-      console.log('newHandler: ', model, newItem);
+    editHandler(model, component, e) {
+      console.log('Edit', { model, component, e });
+      this.editCategory(model)
     }
   },
 

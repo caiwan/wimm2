@@ -30,8 +30,7 @@ export default {
     },
 
     edit: (state, item) => {
-      const index = item.id;
-      var storedItem = state.items[index];
+      var storedItem = state.itemMap[item.id];
       for (var key in item) {
         if (item.hasOwnProperty(key)) {
           storedItem[key] = item[key];
@@ -47,11 +46,11 @@ export default {
   },
 
   actions: {
-    async reload ({ dispatch, state }) {
+    async reload({ dispatch, state }) {
       state.isLoaded = false;
       await dispatch('fetchAll');
     },
-    async fetchAll ({ commit, state }) {
+    async fetchAll({ commit, state }) {
       // TODO: This shit will fetch all the things over 9000 times
       if (state.isLoading || state.isLoaded) { return; }
       state.isLoading = true;
@@ -64,23 +63,19 @@ export default {
       state.isLoaded = true;
     },
 
-    async addNew ({ commit, state }, { parent, value }) {
-      value = value && value.trim();
-      if (!value) {
-        return;
-      }
-      const item = await io.categories.add({
-        title: value,
-        parent: parent
-      });
-
+    async addNew({ commit, state }, { parent, name }) {
+      name = name && name.trim();
+      if (!name) return;
+      const item = await io.categories.add({ name, parent });
       commit('put', item);
     },
 
-    async edit ({ commit, state }, item) {
-      item.title = item.title.trim();
-      if (!item.title) {
+    async edit({ commit, state }, item) {
+      console.log('Lozl', item);
+      item.name = item.name.trim();
+      if (!item.name) {
         await io.categories.remove(item);
+        // TODO: Sup bro, you sure?
         commit('remove', item);
       } else {
         const edited = await io.categories.edit(item);
@@ -88,7 +83,7 @@ export default {
       }
     },
 
-    async remove ({ commit, state }, category) {
+    async remove({ commit, state }, category) {
       await io.categories.remove(category);
       commit('rm', category);
     }

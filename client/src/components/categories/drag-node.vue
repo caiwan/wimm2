@@ -16,7 +16,7 @@
       @click="toggle"
       @mouseover='mouseOver'
       @mouseout='mouseOut'
-      @dblclick="changeType"
+      @dblclick="startEdit"
     >
       <div
         :style="{ 'padding-left': (this.depth - 1) * 24 + 'px' }"
@@ -24,7 +24,21 @@
         class='treeNodeText'
       >
         <span :class="[isClicked ? 'nodeClicked' : '', isFolder ? 'nodeFolderIcon' : 'nodeFolderIconPlaceholder']"></span>
-        <span class='text'>{{model.name}}</span>
+        <template v-if="!isEditing">
+          <span class='text'>{{model.name}}</span>
+        </template>
+        <template v-else>
+          <input
+            autocomplete="off"
+            placeholder="Category"
+            class="edit"
+            v-model="editingName"
+            v-focus="isEditing"
+            @blur="doneEdit"
+            @keyup.enter="doneEdit"
+            @keyup.esc="cancelEdit"
+          />
+        </template>
       </div>
     </div>
     <div
@@ -60,8 +74,10 @@ export default {
   data() {
     return {
       open: false,
-      isClicked: false, //
-      isHover: false, // hvoer
+      isClicked: false,
+      isEditing: false,
+      editingName: '',
+      isHover: false,
       styleObj: {
         opacity: 1
       }
@@ -129,24 +145,23 @@ export default {
         nodeClicked = this.model.id
       }
     },
-
-    changeType() {
-
-      console.log('Sup bro - this should enter edit mode ');
-
+    startEdit() {
       if (this.disableDBClick) {
         return;
       }
-      // -->
-      if (this.currentHighlight) {
-        nodeClicked = this.model.id;
-      }
-      if (!this.isFolder) {
-        this.$set(this.model, 'children', []);
-        this.addChild();
-        this.open = true;
-        this.isClicked = true;
-      }
+      this.isEditing = true;
+      this.editingName = this.model.name;
+    },
+    cancelEdit() {
+      this.isEditing = false;
+      this.editingName = '';
+    },
+    doneEdit(e) {
+      if (!this.isEditing) return;
+      this.isEditing = false;
+      this.model.name = this.editingName;
+      rootTree.emitEdit(this.model, this, e);
+      this.editingName = '';
     },
     mouseOver(e) {
       this.isHover = true;
