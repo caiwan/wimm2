@@ -44,20 +44,7 @@
 import CategoryItem from './category-selector-item.vue';
 import { mapState, mapActions, mapMutations, mapGetters } from "vuex";
 
-// TODO: -> util
-const zebraify = function (element) {
-  // QnD hack for zebra stripes
-  const zebraElements = [].slice.call(element.getElementsByClassName('zebra'));
-  var counter = 0;
-  zebraElements.forEach(element => {
-    if (counter % 2 == 0) {
-      element.classList.add('even');
-    } else {
-      element.classList.add('odd');
-    }
-    counter++;
-  });
-}
+import { zebrafy } from '@/utils.js';
 
 export default {
   name: 'CategorySelector',
@@ -71,7 +58,7 @@ export default {
 
   data() {
     return {
-      categoryTitle: this.category != null ? this.category.title : "",
+      categoryTitle: this.category != null ? this.category.name : "",
       selectedCategory: null, _selectedIndex: 0, _selectDirection: 1,
       showCategorySelector: false, deferBlur: false,
       filteredChoices: [], _requestUpdate: false, _isUpdating: false,
@@ -130,7 +117,7 @@ export default {
     selected(category) {
       this.$emit("itemSelected", category);
       this.showCategorySelector = false;
-      this.categoryTitle = category.title;
+      this.categoryTitle = category.name;
       this.deferBlur = false;
       this.$emit("blur");
     },
@@ -153,7 +140,7 @@ export default {
   },
 
   async updated() {
-    zebraify(this.$el);
+    zebrafy(this.$el);
 
     if (this.$data._requestUpdate) {
       this.$data._requestUpdate = false;
@@ -163,7 +150,7 @@ export default {
         this.isFiltered = false;
       } else {
         // This will yield children too
-        this.filteredChoices = this.categoryList.filter(item => item != null && item.title.toLowerCase().startsWith(this.categoryTitle.toLowerCase()));
+        this.filteredChoices = this.categoryList.filter(item => item != null && item.name.toLowerCase().startsWith(this.categoryTitle.toLowerCase()));
         this.isFiltered = true;
       }
     };

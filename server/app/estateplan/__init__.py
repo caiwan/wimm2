@@ -1,6 +1,6 @@
 # coding=utf-8
 
-from app from app import components
+from app import components
 from app.estateplan.model import Budget, Asset, LastAssetCalculationCache
 
 

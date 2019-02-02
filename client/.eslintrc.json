@@ -10,12 +10,16 @@
     "es6": true,
     "node": true
   },
+  "extends": [
+    "plugin:vue/essential"
+  ],
   "plugins": [
     "import",
     "node",
     "promise",
     "standard",
-    "vue"
+    "vue",
+    "html"
   ],
   "globals": {
     "document": false,
@@ -32,11 +36,11 @@
       }
     ],
     "block-spacing": [
-      "error",
+      "warn",
       "always"
     ],
     "brace-style": [
-      "error",
+      "warn",
       "1tbs",
       {
         "allowSingleLine": true
@@ -102,7 +106,7 @@
       "^(err|error)$"
     ],
     "indent": [
-      "error",
+      "warn",
       2,
       {
         "SwitchCase": 1,
@@ -135,7 +139,7 @@
       }
     ],
     "keyword-spacing": [
-      "error",
+      "warn",
       {
         "before": true,
         "after": true
@@ -279,7 +283,7 @@
     "no-unsafe-finally": "error",
     "no-unsafe-negation": "error",
     "no-unused-expressions": [
-      "error",
+      "warn",
       {
         "allowShortCircuit": true,
         "allowTernary": true,
@@ -287,7 +291,7 @@
       }
     ],
     "no-unused-vars": [
-      "error",
+      "warn",
       {
         "vars": "all",
         "args": "none",
@@ -461,7 +465,7 @@
     "node/process-exit-as-throw": "error",
     "promise/param-names": "error",
     "standard/array-bracket-even-spacing": [
-      "error",
+      "warn",
       "either"
     ],
     "standard/computed-property-even-spacing": [
@@ -472,6 +476,7 @@
     "standard/object-curly-even-spacing": [
       "error",
       "either"
-    ]
+    ],
+    "vue/no-reserved-keys": "off"
   }
 }

@@ -1,6 +1,6 @@
 import peewee
 
-from app from app import components
+from app import components
 
 
 class Category(components.BaseDocumentModel):

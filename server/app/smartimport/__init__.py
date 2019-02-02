@@ -4,7 +4,7 @@ import io
 
 from playhouse.shortcuts import dict_to_model, model_to_dict
 
-from app from app import components
+from app import components
 
 from app.smartimport.model import SmartImportedItem
 from app.smartimport.parsers import dispatch as dispatch_import

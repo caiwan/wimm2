@@ -301,9 +301,6 @@ export default {
       this.resolveRequired = false;
     }
   },
-  watch() {
-
-  }
 }
 </script>
 

@@ -3,7 +3,7 @@ from unittest import TestCase
 import peewee
 
 import app
-from app from app import components
+from app import components
 
 API_ROOT = components.BASE_PATH
 

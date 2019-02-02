@@ -1,6 +1,6 @@
 import peewee
 
-from app from app import components
+from app import components
 from app.tags.model import Tag
 from app.categories.model import Category
 

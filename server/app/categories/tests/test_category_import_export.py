@@ -5,7 +5,7 @@ import json
 import peewee
 
 import app
-from app from app import components
+from app import components
 
 
 API_BASE = components.BASE_PATH

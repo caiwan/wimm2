@@ -7,7 +7,7 @@ from calendar import mdays
 from datetime import datetime, timedelta
 from playhouse.shortcuts import dict_to_model, model_to_dict
 
-from app from app import components
+from app import components
 from app.items.model import Item, TaggedItem
 from app.categories.model import Category
 from app.categories import categoryService

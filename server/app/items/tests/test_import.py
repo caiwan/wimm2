@@ -7,7 +7,7 @@ from unittest import TestCase
 import peewee
 
 import app
-from app from app import components
+from app import components
 
 from app.categories import categoryService
 

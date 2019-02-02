@@ -1,6 +1,6 @@
 import logging
 from flask import request
-from app from app import components
+from app import components
 
 from app.smartimport import smartImportService
 

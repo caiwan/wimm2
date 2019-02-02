@@ -4,7 +4,7 @@
     <h2>The stuff</h2>
 
     <div class="treeSelf">
-      <vue-drag-tree
+      <drag-tree
         :data="categories"
         :allowDrag="allowDrag"
         :allowDrop="allowDrop"
@@ -16,46 +16,14 @@
         @drag-over="dragOverHandler"
         @drag-end="dragEndHandler"
         @drop="dropHandler"
+        @new="newHandler"
+        @edit="editHandler"
         :disableDBClick="false"
         expand-all
-      ></vue-drag-tree>
+      ></drag-tree>
+
     </div>
 
-    <!-- CATEGORIES  -->
-    <h2>(Legacy)</h2>
-    <ul class="tree list-group">
-      <category-item
-        v-for="(category, index) in categories"
-        :key="index"
-        class="item list-group-item"
-        :model="category"
-        :maxDepth="0"
-        v-on:itemAdded="addCategory"
-        v-on:itemEdited="editCategory"
-      />
-      <li class="item list-group-item">
-        <span
-          class="add"
-          v-if="!isAddingChild"
-          @click="startAddChild"
-        >
-          <i class="fa fa-folder-plus"></i> Add new
-        </span>
-
-        <input
-          autofocus
-          autocomplete="off"
-          placeholder="Category"
-          class="add form-control"
-          v-if="isAddingChild"
-          v-model="newChild"
-          v-focus="isAddingChild"
-          @blur="doneAddChild"
-          @keyup.enter="doneAddChild"
-          @keyup.esc="cancelAddChild"
-        />
-      </li>
-    </ul>
     <!-- /CATEGORIES -->
 
     <import-export />
@@ -65,12 +33,13 @@
 
 <script>
 import { mapState, mapActions, mapMutations, mapGetters } from "vuex";
-import FileSaver from "file-saver";
-import CategoryItem from "./category-item.vue"
-import ImportExport from "./import-export.vue"
+import FileSaver from 'file-saver';
+import DragTree from './drag-tree.vue';
+import ImportExport from './import-export.vue';
+
 export default {
   components: {
-    CategoryItem, ImportExport
+    ImportExport, DragTree
   },
 
   data() {
@@ -147,16 +116,15 @@ export default {
     },
     dropHandler(model, component, e) {
       console.log("dropHandler: ", model, component, e);
+    },
+    newHandler(newItem) {
+      console.log('newHandler: ', newItem);
+    },
+    editHandler(model, newItem) {
+      console.log('newHandler: ', model, newItem);
     }
-
   },
-  directives: {
-    focus: function (el, binding) {
-      if (binding.value) {
-        el.focus();
-      }
-    }
-  }
+
 
 }
 </script>
