@@ -26,7 +26,6 @@ export default {
         state.itemTree.push(state.itemMap[item.id]);
       }
       state.items.push(item);
-      // console.log('item', item.id);
     },
 
     edit: (state, item) => {
@@ -71,7 +70,6 @@ export default {
     },
 
     async edit({ commit, state }, item) {
-      console.log('Lozl', item);
       item.name = item.name.trim();
       if (!item.name) {
         await io.categories.remove(item);
