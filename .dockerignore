@@ -70,7 +70,8 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
-.env
+**/*.env
+**/.env
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -203,5 +204,6 @@ dmypy.json
 *.db
 *.db-*
 
+# python tests
 **/test/
 test*.py

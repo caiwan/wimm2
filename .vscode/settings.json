@@ -45,16 +45,16 @@
   ],
   "editor.insertSpaces": true,
   "editor.autoIndent": true,
-  "python.unitTest.unittestArgs": [
+  "python.testing.unittestArgs": [
     "-v",
     "-s",
     "${workspaceFolder}/server/",
     "-p",
     "test_*.py"
   ],
-  "python.unitTest.unittestEnabled": true,
+  "python.testing.unittestEnabled": true,
   "pythonTestExplorer.testFramework": "unittest",
-  "python.unitTest.cwd": "${workspaceFolder}/server",
+  "python.testing.cwd": "${workspaceFolder}/server",
   // "python.linting.flake8Args": [
   // ""
   // ],

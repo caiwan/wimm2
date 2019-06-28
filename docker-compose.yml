@@ -1,6 +1,27 @@
 version: '3'
 services:
+  database:
+    image: postgres:11-alpine
+    restart: always
+    env_file:
+      - ./docker.env
+    ports:
+      - 5432:5432
   app:
     build: ./
+    restart: always
     ports:
-      - 8001:8001
+      - 3031:3031
+      - 3032:3032
+    links:
+      - "database:database"
+    env_file:
+      - ./docker.env
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend.Dockerfile
+    links:
+    - "app:app"
+    ports:
+      - 8081:8081

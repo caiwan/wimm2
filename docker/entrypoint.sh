@@ -1,62 +1,26 @@
-#! /usr/bin/env sh
+#! /usr/bin/env bash
 
 set -e
-# Get the maximum upload file size for Nginx, default to 0: unlimited
-USE_NGINX_MAX_UPLOAD=${NGINX_MAX_UPLOAD:-0}
-# Generate Nginx config for maximum upload file size
-echo "client_max_body_size $USE_NGINX_MAX_UPLOAD;" > /etc/nginx/conf.d/upload.conf
 
-# Get the number of workers for Nginx, default to 1
-USE_NGINX_WORKER_PROCESSES=${NGINX_WORKER_PROCESSES:-1}
-# Modify the number of worker processes in Nginx config
-sed -i "/worker_processes\s/c\worker_processes ${USE_NGINX_WORKER_PROCESSES};" /etc/nginx/nginx.conf
-
-# Set the max number of connections per worker for Nginx, if requested
-# Cannot exceed worker_rlimit_nofile, see NGINX_WORKER_OPEN_FILES below
-if [ -n "$NGINX_WORKER_CONNECTIONS" ] ; then
-    sed -i "/worker_connections\s/c\    worker_connections ${NGINX_WORKER_CONNECTIONS};" /etc/nginx/nginx.conf
+# If there's a prestart.sh script in the /app directory, run it before starting
+PRE_START_PATH=/app/prestart.sh
+echo "Checking for script in $PRE_START_PATH"
+if [ -f $PRE_START_PATH ]; then
+    echo "Running script $PRE_START_PATH"
+    if [ "$DATABASE" == "sqlite" ]; then
+      source $PRE_START_PATH
+    else
+#       exec ./wait-for-it.sh -h $DATABASE_HOST -p $DATABASE_PORT -t $DATABASE_WAIT_TIMEOUT -- echo "OK"
+      while ! exec 6<>/dev/tcp/${DATABASE_HOST}/${DATABASE_PORT}; do
+        echo "Trying to connect to DB ${DATABASE_HOST}"
+        sleep 10
+        echo "Retrying"
+      done
+      source $PRE_START_PATH
+    fi
+else
+    echo "There is no script $PRE_START_PATH"
 fi
 
-
-# Set the max number of open file descriptors for Nginx workers, if requested
-if [ -n "$NGINX_WORKER_OPEN_FILES" ] ; then
-    echo "worker_rlimit_nofile ${NGINX_WORKER_OPEN_FILES};" >> /etc/nginx/nginx.conf
-fi
-
-# Get the URL for static files from the environment variable
-USE_STATIC_URL=${STATIC_URL:-'/static'}
-# Get the absolute path of the static files from the environment variable
-USE_STATIC_PATH=${STATIC_PATH:-'/app/static'}
-# Get the listen port for Nginx, default to 80
-USE_LISTEN_PORT=${LISTEN_PORT:-80}
-
-# Explicitly add installed Python packages and uWSGI Python packages to PYTHONPATH
-# Otherwise uWSGI can't import Flask
-export PYTHONPATH=$PYTHONPATH:/usr/local/lib/python3.7/site-packages:/usr/lib/python3.7/site-packages
-
-# Generate Nginx config first part using the environment variables
-echo "server {
-    listen ${USE_LISTEN_PORT};
-    location / {
-        try_files \$uri @app;
-    }
-    location @app {
-        include uwsgi_params;
-        uwsgi_pass unix:///tmp/uwsgi.sock;
-    }
-    location $USE_STATIC_URL {
-        alias $USE_STATIC_PATH;
-    }" > /etc/nginx/conf.d/nginx.conf
-
-
-# If STATIC_INDEX is 1, serve / with /static/index.html directly (or the static URL configured)
-if [[ $STATIC_INDEX == 1 ]] ; then
-echo "    location = / {
-        index $USE_STATIC_URL/index.html;
-    }" >> /etc/nginx/conf.d/nginx.conf
-fi
-# Finish the Nginx config file
-echo "}" >> /etc/nginx/conf.d/nginx.conf
-
-echo "Execute $@"
-exec $@
+echo "--- Starting supervisord"
+exec /usr/bin/supervisord --configuration /etc/supervisord.conf

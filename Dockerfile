@@ -1,75 +1,110 @@
-# Build static html packages w/ NPM
-FROM node:11-alpine as static-build
-RUN apk update && apk add bash
-ADD ./client /client
-WORKDIR /client
-RUN npm install && \
-  npm run build
 
-# Application
-FROM tiangolo/uwsgi-nginx:python3.6-alpine3.7
 
-ENV NGINX_MAX_UPLOAD 0
-ENV LISTEN_PORT 8001
-ENV UWSGI_INI /app/uwsgi.ini
-ENV STATIC_URL /
-ENV STATIC_PATH /app/static
+FROM python:3.7-alpine3.9 as server-base
 
-# copy and configure app
-ADD ./server /app
-WORKDIR /app
-COPY --from=static-build /client/dist/* /app/static/
-COPY ./docker/wait-for-it.sh /app/
-COPY ./docker/entrypoint.sh /app/
-COPY ./docker/uwsgi.ini /app/
+WORKDIR /
+COPY ./backend/requirements.txt /
 
 # --- Install py deps
+ENV NGINX_VERSION 1.15.12
+
 USER root
+# TODO: Remove unnesesarry packages
 RUN apk update \
   && apk add bash \
   && apk add --no-cache --virtual .build-deps \
-    bzip2-dev \
-    coreutils \
-    dpkg-dev dpkg \
-    expat-dev \
-    findutils \
-    gcc \
-    gdbm-dev \
-    libc-dev \
-    libffi-dev \
-    libnsl-dev \
-    openssl-dev \
-    libtirpc-dev \
-    linux-headers \
-    make \
-    ncurses-dev \
-    pax-utils \
-    readline-dev \
-    sqlite-dev \
-    tcl-dev \
-    tk \
-    tk-dev \
-    util-linux-dev \
-    xz-dev \
-    zlib-dev \
-    python3-dev \
-    cython \
-  && pip install --upgrade pip \
+  curl \
+  cython \
+  bzip2-dev \
+  coreutils \
+  dpkg-dev dpkg \
+  expat-dev \
+  findutils \
+  geoip-dev \
+  gcc \
+  gdbm-dev \
+  libc-dev \
+  libffi-dev \
+  libnsl-dev \
+  libtirpc-dev \
+  linux-headers \
+  libxslt-dev \
+  gd-dev \
+  gnupg1 \
+  make \
+  ncurses-dev \
+  openssl-dev \
+  pax-utils \
+  pcre-dev \
+  python3-dev \
+  readline-dev \
+  sqlite-dev \
+  tcl-dev \
+  tk \
+  tk-dev \
+  util-linux-dev \
+  xz-dev \
+  zlib-dev
+RUN pip install --upgrade pip \
   && pip install --upgrade cython \
-  && pip install uwsgi \
-  && pip install -r requirements.txt \
-  && apk del .build-deps
+  && pip install uwsgi
+RUN apk add \
+  pcre \
+  libxml2 \
+  postgresql-dev \
+  libpq
+RUN pip install -r requirements.txt \
+  && apk add --update supervisor \
+  && rm -rf /tmp/* /var/cache/apk/*
+RUN apk del .build-deps
 
-# --- Config uWSGI
-COPY ./docker/uwsgi.ini /app
+# ---
 
-# --- entrypoint
-COPY ./docker/entrypoint.sh /app/
-COPY ./docker/start.sh /app/
-COPY ./docker/prestart.sh /app/
-RUN chmod +x /app/entrypoint.sh \
-  /app/start.sh \
-  /app/prestart.sh
+FROM server-base
 
-ENTRYPOINT ["sh", "/app/entrypoint.sh"]
-CMD ["/app/start.sh]
+EXPOSE 3031
+
+ENV DEFAULT_USER="admin"
+ENV DEFAULT_PASSWORD="admin"
+# - SQLITE by default
+ENV DATABASE="sqlite"
+ENV DATABASE_NAME=""
+ENV DATABASE_USER=""
+ENV DATABASE_PASSWORD=""
+ENV DATABASE_PATH="notes.db"
+# - POSTGRESQL
+# ENV DATABASE="postgresql"
+# ENV DATABASE_NAME="notesapp"
+# ENV DATABASE_USER="notesappuser"
+# ENV DATABASE_PASSWORD="notesapppassword"
+# ENV DATABASE_HOST="database"
+# ENV DATABASE_PORT="5432"
+# -- Max timeout for wait-for-it in sec
+ENV DATABASE_WAIT_TIMEOUT=380
+
+ENV CSRF_SESSION_KEY=""
+ENV GOOGLE_CLIENT_ID=""
+ENV GOOGLE_CLIENT_SECRET=""
+ENV DEFAULT_USER="USER"
+ENV DEFAULT_PASSWORD="PASSWORD"
+
+# Use for debugging inside the docker image
+# ENV FLASK_ENV=production
+# ENV FLASK_DEBUG=True
+# # ENV FLASK_TESTING=False
+
+ENV FLASK_ENV=production
+ENV FLASK_DEBUG=False
+# ENV FLASK_TESTING=False
+
+ADD ./backend /app
+WORKDIR /app
+COPY ./docker/*.sh /app/
+RUN chmod +x /app/*.sh
+COPY ./docker/config /app/config
+
+# --- Config services
+COPY ./docker/uwsgi.ini /app/
+COPY ./docker/supervisord.conf /etc/supervisord.conf
+
+ENTRYPOINT ["bash", "/app/entrypoint.sh"]
