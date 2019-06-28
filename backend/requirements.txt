@@ -1,9 +1,18 @@
-Flask>=0.10.1
-flask-restful>=0.3.6
-Flask-Script
-peewee==3.8.0
+bcrypt==3.1.6
+Flask==1.0.2
 Flask-Cors==3.0.3
-Fuzzy
+Flask-HTTPAuth==3.2.4
+Flask-Login==0.4.1
+Flask-Principal==0.4.0
+Flask-RESTful==0.3.7
+Flask-Script==2.0.6
+Fuzzy==1.2.2
+MarkupSafe==0.23
+peewee==3.9.5
+Peewee-Migrate>=1.1.5
+# psycopg2>=2.8.2
+psycopg2-binary>=2.8.2
 python-slugify
 python-Levenshtein
-python-dotenv
+pyjwt==1.4.2
+watchdog

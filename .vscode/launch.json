@@ -21,8 +21,8 @@
         "8000"
       ],
       "jinja": true,
-      "cwd": "${workspaceFolder}/server",
-      "envFile": "${workspaceFolder}/sever/dev.env"
+      "cwd": "${workspaceFolder}/backend",
+      "envFile": "${workspaceFolder}/backend/dev.env"
     },
     {
       "name": "Python: Current File (External Terminal)",

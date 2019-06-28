@@ -1,8 +1,7 @@
 {
-  "python.pythonPath": "~/.pyenv/versions/3.7.0/bin/python",
   "python.autoComplete.extraPaths": [
-    "${workspaceFolder}/server/",
-    "${workspaceFolder}/server/app"
+    "${workspaceFolder}/backend/",
+    "${workspaceFolder}/backend/app"
   ],
   "editor.formatOnSave": false,
   "files.insertFinalNewline": true,
@@ -48,17 +47,17 @@
   "python.testing.unittestArgs": [
     "-v",
     "-s",
-    "${workspaceFolder}/server/",
+    "${workspaceFolder}/backend/",
     "-p",
     "test_*.py"
   ],
   "python.testing.unittestEnabled": true,
   "pythonTestExplorer.testFramework": "unittest",
-  "python.testing.cwd": "${workspaceFolder}/server",
+  "python.testing.cwd": "${workspaceFolder}/backend",
   // "python.linting.flake8Args": [
   // ""
   // ],
-  "python.envFile": "${workspaceFolder}/server/dev.env",
+  "python.envFile": "${workspaceFolder}/backend/dev.env",
   "python.linting.flake8Enabled": true,
   "python.linting.enabled": true,
 }
