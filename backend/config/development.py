@@ -10,25 +10,25 @@ FLASH_MESSAGES = True
 
 # DB Connection
 # Sqlite
-# DATABASE = "sqlite"
-# DATABASE_NAME = "wimm2"
-# DATABASE_PATH = "./app.db"
+DATABASE = "sqlite"
+DATABASE_NAME = "wimm2"
+DATABASE_PATH = "./app.db"
 
 # -- OR --
 # Postgresql
-DATABASE = "postgresql"
-DATABASE_NAME = "wimmapp"
-DATABASE_AUTH = {
-    "user": "wimmuser",
-    "password": "wimmpassword",
-    "host": "127.0.0.1",
-    "port": 5432
-}
+# DATABASE = "postgresql"
+# DATABASE_NAME = "wimmapp"
+# DATABASE_AUTH = {
+#     "user": "wimmuser",
+#     "password": "wimmpassword",
+#     "host": "127.0.0.1",
+#     "port": 5432
+# }
 
 # -- OR --
 # for testing
 # DATABASE = "sqlite"
-# DATABASE_NAME = "cai-notes"
+# DATABASE_NAME = "wimmapp"
 # DATABASE_PATH = ":memory:"
 
 # Application in-dev. settings
