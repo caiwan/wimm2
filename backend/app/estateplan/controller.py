@@ -1,7 +1,7 @@
 from flask import request
 from app import components
 
-from estateplan import budgetService, assetService
+from app.estateplan import budgetService, assetService
 
 
 class BudgetListController(components.Controller):

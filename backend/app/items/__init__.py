@@ -182,7 +182,12 @@ class ItemReportService(components.Service):
     pass
 
 
-def init(app, api, models):
+class Module (components.Module):
     from app.items.controller import ItemListController, ItemController, ItemImportController
-    components.register_controllers(api, [ItemListController, ItemController, ItemImportController])
-    models.extend([Item, TaggedItem])
+    name = "items"
+    services = [itemService]
+    models = [Item, TaggedItem]
+    ontrollers = [ItemListController, ItemController, ItemImportController]
+
+
+module = Module()

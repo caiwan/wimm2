@@ -22,12 +22,13 @@ class AssetService(components.Service):
 assetService = AssetService()
 
 
-def init(app, api, models):
-    from estateplan.controller import BudgetController, BudgetListController
-    from estateplan.controller import AssetController, AssetListController
-    components.register_controllers(api, [
-        BudgetController, BudgetListController,
-        AssetController, AssetListController
-    ])
-    models.extend([Budget, Asset, LastAssetCalculationCache])
-    pass
+class Module (components.Module):
+    from app.estateplan.controller import AssetController, AssetListController
+    from app.estateplan.controller import BudgetController, BudgetListController
+    name = "estateplan"
+    services = [assetService, budgetService]
+    models = [Budget, Asset, LastAssetCalculationCache]
+    controllers = [AssetController, AssetListController, BudgetController, BudgetListController]
+
+
+module = Module()

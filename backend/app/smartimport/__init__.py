@@ -111,9 +111,14 @@ class SmartImportService(components.Service):
 smartImportService = SmartImportService()
 
 
-def init(app, api, models):
+class Module (components.Module):
     from app.smartimport.model import TaggedSmartImportedItem
     from app.smartimport.controller import SmartImportUploadController
     from app.smartimport.controller import SmartImportListController, SmartImportController
-    components.register_controllers(api, [SmartImportUploadController, SmartImportListController, SmartImportController])
-    models.extend([SmartImportedItem, TaggedSmartImportedItem])
+    name = "smartimport"
+    services = [smartImportService]
+    models = [TaggedSmartImportedItem]
+    controllers = [SmartImportUploadController, SmartImportListController, SmartImportController]
+
+
+module = Module()

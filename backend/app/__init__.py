@@ -22,7 +22,7 @@ MODULES = [
     "user.settings",
     "tags",
     "categories",
-    "estaeplan",
+    "estateplan",
     "items",
     "smartimport"
 ]
