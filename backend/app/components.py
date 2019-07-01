@@ -112,32 +112,32 @@ class BaseHTTPException(Exception):
 
 class BadRequestError(BaseHTTPException):
     def __init__(self, payload=None):
-        return BaseHTTPException.__init__(self, "Bad Request", payload=payload)
+        BaseHTTPException.__init__(self, "Bad Request", payload=payload)
 
 
 class MethodNotImplemented(BaseHTTPException):
     def __init__(self, payload=None):
-        return BaseHTTPException.__init__(self, invalid_call_message, status_code=501, payload=payload)
+        BaseHTTPException.__init__(self, invalid_call_message, status_code=501, payload=payload)
 
 
 class InvalidMethodCallError(BaseHTTPException):
     def __init__(self, payload=None):
-        return BaseHTTPException.__init__(self, invalid_call_message, status_code=405, payload=payload)
+        BaseHTTPException.__init__(self, invalid_call_message, status_code=405, payload=payload)
 
 
 class AuthorizationError(BaseHTTPException):
     def __init__(self, payload=None):
-        return BaseHTTPException.__init__(self, unauthorized_message, status_code=401, payload=payload)
+        BaseHTTPException.__init__(self, unauthorized_message, status_code=401, payload=payload)
 
 
 class NoPermissionError(BaseHTTPException):
     def __init__(self, payload=None):
-        return BaseHTTPException.__init__(self, no_permission_message, status_code=403, payload=payload)
+        BaseHTTPException.__init__(self, no_permission_message, status_code=403, payload=payload)
 
 
 class ResourceNotFoundError(BaseHTTPException):
     def __init__(self, payload=None):
-        return BaseHTTPException.__init__(self, not_found_message, status_code=404, payload=payload)
+        BaseHTTPException.__init__(self, not_found_message, status_code=404, payload=payload)
 
 
 def error_handler(ex):
@@ -439,64 +439,12 @@ def _truncate_tables(app, models):
         logging.exception("Could not truncate tables")
 
 
-# Quick and dirty Object mapping
-def _map(mapper, object):
-    if not mapper:
-        return object
-    return mapper(object)
-    pass
-
-
-def object_mapping(request_mapper=None, response_mapper=None):
-    def decorator_marshal(f):
-        @wraps(f)
-        def check_rx_tx_type(*args, **kwargs):
-            payload = _map(request_mapper, request.json)
-            result = f(payload, *args, **kwargs)
-            response = result
-            status = 200
-            if isinstance(response, tuple):
-                (response, status) = result
-            response = _map(response_mapper, response)
-            return (response, status)
-        pass
-    pass
-    return decorator_marshal
-
-
-# Maintenance tools
-def _database_backup(models):
-    backup = {}
-    for model in models:
-        records = model.select().objects()
-        backup[model.__name__] = [model_to_dict(
-            record, recurse=False) for record in records]
-    return backup
-
-
-def _database_restore(models, data):
-    DB.drop_tables(models, safe=True)
-    DB.create_tables(models, safe=True)
-    model_map = dict((m.__name__, m) for m in models)
-    with DB.atomic():
-        # TODO: TBD
-        # this doesn't work this way, because we'll need to insert all the FKs later some way
-        # 1. Trim FKs
-        # 2 ...
-        # 3 ...
-        for table, records in data.items():
-            if records:
-                model = model_map[table]
-                model.insert_many(records).on_conflict_ignore(True).execute()
-                logging.info("Restored db: %s" % (model.__name__))
-
-
 def _createmigration(migration_name):
     router = Router(DB)
     router.create(migration_name)
 
 
-def _runmigration(migration_name):
+def _runmigration(migration_name=None):
     router = Router(DB)
     router.run(migration_name)
 

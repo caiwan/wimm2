@@ -18,11 +18,10 @@ import app.settings
 MODULES = [
     "settings",
     "user",
-    "user.oauth",
     "user.settings",
     "tags",
     "categories",
-    "estateplan",
+    # "estateplan",
     "items",
     "smartimport"
 ]
