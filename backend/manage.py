@@ -113,25 +113,6 @@ def createdb():
 
 
 @manager.command
-def backupdb(filename):
-    """Creates a backup from the database"""
-    import json
-    from app.components import MyJsonEncoder, _database_backup
-    with open(filename, mode="w") as file:
-        backup = _database_backup(app.MODELS)
-        json.dump(backup, file, cls=MyJsonEncoder, indent=2)
-
-
-@manager.command
-def restoredb(filename):
-    """Restores db from a backup"""
-    from app.components import _database_restore
-    with open(filename, mode="r") as file:
-        backup = json.load(file)
-        _database_restore(app.MODELS, backup)
-
-
-@manager.command
 def createmigration(migration_name):
     """Creates a migration script from the database"""
     components._createmigration(migration_name)
