@@ -63,6 +63,13 @@ def migrate(migrator, database, fake=False, **kwargs):
 
     migrator.create_model(User.permissions.through_model)
 
+    @migrator.create_model
+    class Token(BaseModel):
+        user = peewee.ForeignKeyField(User)
+        issued_at = peewee.DateTimeField(null=False, default=datetime.now)
+        expiration = peewee.DateTimeField(null=False)
+        jwt = peewee.TextField(null=False)
+
     class BaseDocumentModel(BaseModel):
         created = peewee.DateTimeField(null=False, default=datetime.now, formats=["%s"])
         edited = peewee.DateTimeField(null=False, default=datetime.now, index=True, formats=["%s"])

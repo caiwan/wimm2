@@ -28,7 +28,7 @@ FLASH_MESSAGES = True
 # -- OR --
 # for testing
 DATABASE = "sqlite"
-DATABASE_NAME = "cai-notes"
+DATABASE_NAME = "wimm2"
 DATABASE_PATH = ":memory:"
 
 # Application in-dev. settings

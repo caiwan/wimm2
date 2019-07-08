@@ -396,6 +396,7 @@ def database_init(app, models):
 
     elif app.config["DATABASE"] == "sqlite":
         from playhouse.pool import PooledSqliteDatabase
+        logging.debug("Sqlite: %s" % (app.config["DATABASE_PATH"]))
         database = PooledSqliteDatabase(app.config["DATABASE_PATH"], pragmas={
             "journal_mode": "wal",
             "cache_size": -1024 * 64,
@@ -446,6 +447,8 @@ def _createmigration(migration_name):
 
 def _runmigration(migration_name=None):
     router = Router(DB)
+    for todo in router.todo:
+        logging.debug("Migration task: %s", str(todo))
     router.run(migration_name)
 
 

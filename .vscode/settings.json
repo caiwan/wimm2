@@ -54,10 +54,7 @@
   "python.testing.unittestEnabled": true,
   "pythonTestExplorer.testFramework": "unittest",
   "python.testing.cwd": "${workspaceFolder}/backend",
-  // "python.linting.flake8Args": [
-  // ""
-  // ],
-  "python.envFile": "${workspaceFolder}/backend/dev.env",
+  "python.envFile": "${workspaceFolder}/backend/test.env",
   "python.linting.flake8Enabled": true,
   "python.linting.enabled": true,
 }
