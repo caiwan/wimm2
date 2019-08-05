@@ -25,7 +25,6 @@ class TestAdmin(BaseTest, TestCase):
         self._setup_app()
 
     def tearDown(self):
-        # self._db.close()
         pass
 
     def test_create(self):

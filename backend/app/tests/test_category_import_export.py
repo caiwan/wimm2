@@ -7,12 +7,14 @@ import peewee
 import app
 from app import components
 
+from app.tests import BaseTest
+
 
 API_BASE = components.BASE_PATH
 FILE_ROOT = os.path.dirname(__file__)
 
 
-class CategoryImportExportTest(TestCase):
+class CategoryImportExportTest(BaseTest, TestCase):
 
     post_args = {
         "content_type": "application/json"
@@ -22,15 +24,15 @@ class CategoryImportExportTest(TestCase):
         "content_type": "multipart/form-data"
     }
 
+    def __init__(self, methodName):
+        BaseTest.__init__(self)
+        TestCase.__init__(self, methodName)
+
     def setUp(self):
-        self._db = peewee.SqliteDatabase(":memory:")
-        components.DB.initialize(self._db)
-        components.DB.connect()
-        components.DB.create_tables(app.models, safe=True)
-        self.app = app.APP.test_client()
+        self._setup_app()
 
     def tearDown(self):
-        self._db.close()
+        pass
 
     def test_import_categories(self):
         # given

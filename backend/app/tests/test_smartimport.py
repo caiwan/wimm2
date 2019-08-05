@@ -15,13 +15,15 @@ from app import components
 
 from app.categories import categoryService
 
+from app.tests import BaseTest
+
 API_ROOT = components.BASE_PATH
 FILE_ROOT = os.path.dirname(__file__)
 APP_ROOT = app.APP_ROOT
 
 
 @ddt.ddt
-class SmartImportTest(TestCase):
+class SmartImportTest(BaseTest, TestCase):
     args = {
         "content_type": "application/json"
     }
@@ -30,19 +32,17 @@ class SmartImportTest(TestCase):
         "content_type": "multipart/form-data"
     }
 
+    def __init__(self, methodName):
+        BaseTest.__init__(self)
+        TestCase.__init__(self, methodName)
+
     def setUp(self):
-        self._db = peewee.SqliteDatabase(":memory:")
-        components.DB.initialize(self._db)
-        components.DB.connect()
-        components.DB.create_tables(app.models, safe=True)
-        self.app = app.APP.test_client()
-
+        self._setup_app()
         self._insert_categories("categories.json")
-
         pass
 
     def tearDown(self):
-        self._db.close()
+        pass
 
     @ddt.unpack
     @ddt.data(

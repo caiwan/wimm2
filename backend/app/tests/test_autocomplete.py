@@ -8,11 +8,13 @@ import peewee
 import app
 from app import components
 
+from app.tests import BaseTest
+
 API_ROOT = components.BASE_PATH
 
 
 @ddt.ddt
-class AutocompleteTest(TestCase):
+class AutocompleteTest(BaseTest, TestCase):
     args = {
         "content_type": "application/json"
     }
@@ -36,21 +38,20 @@ class AutocompleteTest(TestCase):
         }
     ]
 
+    def __init__(self, methodName):
+        BaseTest.__init__(self)
+        TestCase.__init__(self, methodName)
+
     def setUp(self):
-        self._db = peewee.SqliteDatabase(":memory:")
-        components.DB.initialize(self._db)
-        components.DB.connect()
-        components.DB.create_tables(app.models, safe=True)
-        self.app = app.APP.test_client()
+        self._setup_app()
 
         for item_data in self.items:
             response = self.app.post(API_ROOT + "/items/", data=json.dumps(item_data), **self.args)
             self.assertEquals(201, response.status_code)
-
         pass
 
     def tearDown(self):
-        self._db.close()
+        pass
 
     @ddt.unpack
     @ddt.data(

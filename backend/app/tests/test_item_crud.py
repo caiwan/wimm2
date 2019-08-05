@@ -6,20 +6,22 @@ import peewee
 import app
 from app import components
 
+from app.tests import BaseTest
+
+
 API_ROOT = components.BASE_PATH
 
 
-class ItemCRUDTest(TestCase):
+class ItemCRUDTest(BaseTest, TestCase):
     args = {
         "content_type": "application/json"
     }
 
+    def __init__(self, methodName):
+        BaseTest.__init__(self)
+        TestCase.__init__(self, methodName)
+
     def setUp(self):
-        self._db = peewee.SqliteDatabase(":memory:")
-        components.DB.initialize(self._db)
-        components.DB.connect()
-        components.DB.create_tables(app.models, safe=True)
-        self.app = app.APP.test_client()
         pass
 
     def tearDown(self):

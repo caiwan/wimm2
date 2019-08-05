@@ -61,6 +61,14 @@ def migrate(migrator, database, fake=False, **kwargs):
 
         permissions = peewee.ManyToManyField(Role, backref="users")
 
+    @migrator.create_model
+    class UserProperty(BaseModel):
+        user = peewee.ForeignKeyField(User)
+        module = peewee.TextField(null=False)
+        key = peewee.TextField(null=False)
+        value = peewee.TextField(null=False)
+
+
     migrator.create_model(User.permissions.through_model)
 
     @migrator.create_model

@@ -1,10 +1,21 @@
 Refactor:
-  - Fix test fixture:
-    - Autocomplete
-    - Category Imort / export
-    - Item CRUD
-    - Smartimport
-
-  - Category merge : no such table: userproperty
-  - Tag report
+  ✔ Fix test fixture: @done(19-08-05 15:44)
+    ✔ Autocomplete @done(19-08-05 15:44)
+    ✔ Category Imort / export @done(19-08-05 15:44)
+    ✔ Item CRUD @done(19-08-05 15:44)
+    ✔ Smartimport @done(19-08-05 15:44)
+  ✔ Migration: @done(19-08-05 15:48)
+    ✔  no such table: userproperty @done(19-08-05 15:48)
+    - Tag report
     - add specs
+    - Autocomplete 404
+  - Category merge : 404
+  - Smartimport - 'CategoryService' object has no attribute 'bulk_create_items'
+
+Refactor new features - BACKEND:
+  - Add rights check to endpoints
+    - TBD
+
+Refactor new features - FRONTEND:
+  - Login / Logout
+
