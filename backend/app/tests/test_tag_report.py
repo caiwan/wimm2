@@ -1,4 +1,5 @@
 from unittest import TestCase
+from unittest import skip
 
 import peewee
 
@@ -24,10 +25,12 @@ class TagReportsTest(TestCase):
     def tearDown(self):
         self._db.close()
 
+    @skip("not implemented")
     def test_tag_sum(self):
         self.fail("Not implemented")
         pass
 
+    @skip("not implemented")
     def test_tag_sum_over_time(self):
         self.fail("Not implemented")
         pass

@@ -1,0 +1,10 @@
+Refactor:
+  - Fix test fixture:
+    - Autocomplete
+    - Category Imort / export
+    - Item CRUD
+    - Smartimport
+
+  - Category merge : no such table: userproperty
+  - Tag report
+    - add specs
