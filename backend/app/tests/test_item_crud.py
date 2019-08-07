@@ -22,6 +22,7 @@ class ItemCRUDTest(BaseTest, TestCase):
         TestCase.__init__(self, methodName)
 
     def setUp(self):
+        self._setup_app()
         pass
 
     def tearDown(self):

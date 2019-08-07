@@ -21,6 +21,9 @@ class AutocompleteTest(BaseTest, TestCase):
 
     DATE_FMT = "%Y-%m-%d"
 
+    AUTOCOMPLETE_PATH = "%s/tags/autocomplete/" % API_ROOT
+    ITEMS_PATH = "%s/items/" % API_ROOT
+
     items = [
         {
             "date": datetime.now().strftime(DATE_FMT),
@@ -46,7 +49,7 @@ class AutocompleteTest(BaseTest, TestCase):
         self._setup_app()
 
         for item_data in self.items:
-            response = self.app.post(API_ROOT + "/items/", data=json.dumps(item_data), **self.args)
+            response = self.app.post(self.ITEMS_PATH, data=json.dumps(item_data), **self.args)
             self.assertEquals(201, response.status_code)
         pass
 
@@ -66,7 +69,7 @@ class AutocompleteTest(BaseTest, TestCase):
         query_string = {"q": query}
 
         # when
-        response = self.app.get(API_ROOT + "/autocomplete/", **self.args, query_string=query_string)
+        response = self.app.get(self.AUTOCOMPLETE_PATH, **self.args, query_string=query_string)
         self.assertEqual(200, response.status_code)
 
         # then
