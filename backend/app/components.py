@@ -1,5 +1,7 @@
 import logging
 
+from os import path
+import os, sys
 import json
 
 from functools import wraps
@@ -18,6 +20,9 @@ from flask_restful import Resource
 from flask_restful import request
 
 from flask import g
+
+MIGRATIONS_FOLDER = "migrations"
+MIGRATIONS_DIR = path.abspath(path.join(path.dirname(__file__), "../", MIGRATIONS_FOLDER))
 
 
 BASE_PATH = "/api"
@@ -441,19 +446,19 @@ def _truncate_tables(app, models):
 
 
 def _createmigration(migration_name):
-    router = Router(DB)
+    router = Router(DB, migrate_dir=MIGRATIONS_DIR)
     router.create(migration_name)
 
 
 def _runmigration(migration_name=None):
-    router = Router(DB)
+    router = Router(DB, migrate_dir=MIGRATIONS_DIR)
     for todo in router.todo:
         logging.debug("Migration task: %s", str(todo))
     router.run(migration_name)
 
 
 def _rollbackmigration(migration_name):
-    router = Router(DB)
+    router = Router(DB, migrate_dir=MIGRATIONS_DIR)
     router.rollback(migration_name)
 
 

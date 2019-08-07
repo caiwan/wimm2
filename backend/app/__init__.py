@@ -32,16 +32,14 @@ TEST = (os.getenv("FLASK_ENV", default="production") == "test")
 DEBUG = (os.getenv("FLASK_DEBUG", default="False") == "True")
 
 logging.disable(logging.NOTSET)
+logging.getLogger().setLevel(logging.DEBUG if DEBUG else logging.INFO)
+
 if not PRODUCTION:
     logging.basicConfig(format="%(levelname)-7s %(module)s.%(funcName)s - %(message)s")
-    logging.getLogger().setLevel(logging.DEBUG if DEBUG and not TEST else logging.INFO)
 else:
     logging.basicConfig(format="%(asctime)s %(levelname)-7s %(module)s.%(funcName)s - %(message)s")
-    logging.getLogger().setLevel(logging.INFO)
 
-logging.debug("Loading %s, app version = %s", __name__,
-             os.getenv("CURRENT_VERSION_ID"))
-
+logging.debug("Loading %s, app version=%s cwd=%s", __name__, os.getenv("CURRENT_VERSION_ID"), os.getcwd())
 
 # ---
 # add import paths for internal imports
@@ -61,9 +59,6 @@ class MyConfig(object):
         flask_app.config.from_object(config)
         if APP_ROOT not in sys.path:
             sys.path.insert(0, os.path.dirname(APP_ROOT + "/../"))
-
-        # config = "config.production" if PRODUCTION else "config.local"
-        # config = "config.test" if TEST else config
         config = "config.%s" % ENVIRONMENT
         try:
             cfg = importlib.import_module(config)
