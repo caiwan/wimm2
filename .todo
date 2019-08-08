@@ -1,5 +1,5 @@
 Refactor:
-  - Add authorizations
+  - Add authorizations to endpoints - auth.verify - no valid token
   ✔ Fix test fixture: @done(19-08-05 15:44)
     ✔ Autocomplete @done(19-08-05 15:44)
     ✔ Category Imort / export @done(19-08-05 15:44)
